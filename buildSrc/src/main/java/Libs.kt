@@ -10,4 +10,15 @@ object Versions {
 
 object Libs {
 
+    object AndroidX {
+
+    }
+
+    object Dagger {
+        private const val daggerVersion = "2.38.1"
+        const val hiltAndroid = "com.google.dagger:hilt-android:$daggerVersion"
+        const val hiltCompiler = "com.google.dagger:hilt-compiler:$daggerVersion"
+        const val hiltGradlePlugin = "com.google.dagger:hilt-android-gradle-plugin:$daggerVersion"
+    }
+
 }
