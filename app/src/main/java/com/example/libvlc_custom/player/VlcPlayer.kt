@@ -3,7 +3,6 @@ package com.example.libvlc_custom.player
 import android.net.Uri
 import android.view.SurfaceView
 
-import org.videolan.libvlc.Media
 import org.videolan.libvlc.RendererItem
 import org.videolan.libvlc.interfaces.IMedia
 import org.videolan.libvlc.interfaces.IVLCVout
@@ -20,7 +19,7 @@ interface VlcPlayer : MediaPlayer {
 
     val currentVideoTrack: IMedia.VideoTrack?
 
-    val media: Media?
+    val media: IMedia?
 
     fun setMedia(fileDescriptor: FileDescriptor?)
 
