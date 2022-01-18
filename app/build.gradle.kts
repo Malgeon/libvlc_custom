@@ -9,7 +9,7 @@ android {
     compileSdk = Versions.compileSdk
 
     defaultConfig {
-        applicationId = "com.farmsplan.libvlc_custom"
+        applicationId = "com.example.libvlc_custom"
         minSdk = Versions.minSdk
         targetSdk = Versions.targetSdk
         versionCode = Versions.versionCode

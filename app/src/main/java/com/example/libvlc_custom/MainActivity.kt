@@ -1,4 +1,4 @@
-package com.farmsplan.libvlc_custom
+package com.example.libvlc_custom
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
