@@ -7,8 +7,6 @@ import org.videolan.libvlc.RendererItem
 import org.videolan.libvlc.interfaces.IMedia
 import org.videolan.libvlc.interfaces.IVLCVout
 
-import java.io.FileDescriptor
-
 interface VlcPlayer : MediaPlayer {
 
     val vOut: IVLCVout
@@ -20,8 +18,6 @@ interface VlcPlayer : MediaPlayer {
     val currentVideoTrack: IMedia.VideoTrack?
 
     val media: IMedia?
-
-    fun setMedia(fileDescriptor: FileDescriptor?)
 
     fun attachSurfaces(
             surfaceMedia: SurfaceView,

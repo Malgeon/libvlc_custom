@@ -10,7 +10,6 @@ import org.videolan.libvlc.RendererItem
 import org.videolan.libvlc.interfaces.IMedia
 import org.videolan.libvlc.interfaces.IMedia.Slave.Type.Subtitle
 import org.videolan.libvlc.interfaces.IVLCVout
-import java.io.FileDescriptor
 
 class VlcMediaPlayer constructor(
     private val libVlc: LibVLC
@@ -114,15 +113,6 @@ class VlcMediaPlayer constructor(
             Subtitle, uri, true
         )
     }
-
-    override fun setMedia(fileDescriptor: FileDescriptor?) {
-        val media = Media(libVlc, testUri)
-
-        player.media = media
-
-        media.release()
-    }
-
 
     override fun attachSurfaces(
         surfaceMedia: SurfaceView,
