@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar"/>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.FullScreen" parent="@style/AppTheme.NoActionBar">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+    <style name="AppTheme.DialogDark" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="android:windowBackground">@color/player_dialog_background</item>
+        <item name="backgroundTint">@color/player_dialog_background_tint</item>
+        <item name="android:textColor">@color/player_dialog_text</item>
+        <item name="colorAccent">@color/player_dialog_accent</item>
+        <item name="android:textColorPrimary">@color/player_dialog_text</item>
+        <item name="android:textColorSecondary">@color/player_dialog_text</item>
+    </style>
+
+    <style name="AppTheme.PlayerComponentToolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="actionBarItemBackground">@drawable/background_action_bar_item</item>
+    </style>
+
+    <style name="AppTheme.PlayerSeekBar" parent="@style/Widget.AppCompat.SeekBar">
+        <item name="colorAccent">@color/player_seekbar</item>
+    </style>
+</resources>

@@ -6,9 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.libvlc_custom.R
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class Player1Fragment : Fragment() {
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

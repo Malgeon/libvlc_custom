@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_home"
+    app:startDestination="@id/player1Fragment">
+
+    <fragment
+        android:id="@+id/player1Fragment"
+        android:name="com.example.libvlc_custom.ui.player1.Player1Fragment"
+        android:label="fragment_player1"
+        tools:layout="@layout/fragment_player1" />
+</navigation>
