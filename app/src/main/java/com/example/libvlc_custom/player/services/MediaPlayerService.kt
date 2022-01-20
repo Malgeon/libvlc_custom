@@ -3,14 +3,12 @@ package com.example.libvlc_custom.player.services
 import android.app.Notification
 import android.app.NotificationManager
 import android.app.Service
-import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.media.AudioManager
 import android.net.Uri
 import android.os.Build
-import android.os.FileUtils
 import android.os.IBinder
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
@@ -26,10 +24,7 @@ import com.example.libvlc_custom.R
 import com.example.libvlc_custom.player.MediaPlayer
 import com.example.libvlc_custom.player.VlcMediaPlayer
 import com.example.libvlc_custom.player.observables.RendererItemObservable
-import com.example.libvlc_custom.player.utils.AudioUtils
-import com.example.libvlc_custom.player.utils.BitmapUtils
-import com.example.libvlc_custom.player.utils.NotificationUtils
-import com.example.libvlc_custom.player.utils.ResourceUtils
+import com.example.libvlc_custom.player.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import org.videolan.libvlc.Dialog
 import org.videolan.libvlc.LibVLC
@@ -280,7 +275,36 @@ class MediaPlayerService : Service(), MediaPlayer.Callback, Dialog.Callbacks {
             MediaPlayerService.MediaPlayerServiceNotificationId,
             buildPlaybackNotification()
         )
+    }
 
+    private fun getPauseAction(context: Context): NotificationCompat.Action {
+        return NotificationCompat.Action(
+            R.drawable.ic_pause_black_36dp,
+            "Pause",
+            MediaButtonReceiver.buildMediaButtonPendingIntent(
+                context,
+                PlaybackStateCompat.ACTION_PAUSE)
+        )
+    }
+
+    private fun getPlayAction(context: Context): NotificationCompat.Action {
+        return NotificationCompat.Action(
+            R.drawable.ic_play_arrow_black_36dp,
+            "Play",
+            MediaButtonReceiver.buildMediaButtonPendingIntent(
+                context,
+                PlaybackStateCompat.ACTION_PLAY)
+        )
+    }
+
+    private fun getStopAction(context: Context): NotificationCompat.Action {
+        return NotificationCompat.Action(
+            R.drawable.ic_clear_black_36dp,
+            "Stop",
+            MediaButtonReceiver.buildMediaButtonPendingIntent(
+                context,
+                PlaybackStateCompat.ACTION_STOP)
+        )
     }
 
     private fun buildPlaybackNotification(): Notification {
@@ -315,13 +339,10 @@ class MediaPlayerService : Service(), MediaPlayer.Callback, Dialog.Callbacks {
 
         builder.addAction(getStopAction(context))
 
-        builder.setStyle(android.support.v4.media.app.NotificationCompat.MediaStyle()
+        builder.setStyle(androidx.media.app.NotificationCompat.MediaStyle()
             .setMediaSession(mediaSession!!.sessionToken)
             .setShowActionsInCompactView(0, 1)
         )
-
-        builder.setStyle(NotificationCompat.)
-
         return builder.build()
     }
 
@@ -502,20 +523,7 @@ class MediaPlayerService : Service(), MediaPlayer.Callback, Dialog.Callbacks {
         if (context == null || mediaUri == null) {
             return
         }
-        val schema = mediaUri.scheme
         setMediaBitmap(mediaUri)
-
-        // Use file descriptor when dealing with content schemas.
-        if (schema != null && schema == ContentResolver.SCHEME_CONTENT) {
-            player?.setMedia(
-                FileUtils.getUriFileDescriptor(
-                    context.applicationContext,
-                    mediaUri,
-                    "r"
-                )
-            )
-            return
-        }
         player?.setMedia(mediaUri)
     }
 
@@ -577,6 +585,8 @@ class MediaPlayerService : Service(), MediaPlayer.Callback, Dialog.Callbacks {
         private const val MediaPlayerServiceChannelId = "channel.mediaplayerservice"
         private const val SimpleVlcSessionTag = "tag.libvlcsession"
         private const val MediaPlayerServiceNotificationId = 1
+
+
 
     }
 }
