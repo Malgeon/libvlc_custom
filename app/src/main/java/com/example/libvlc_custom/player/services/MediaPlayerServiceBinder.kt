@@ -5,9 +5,12 @@ import android.net.Uri
 import android.os.Binder
 import android.support.v4.media.session.MediaSessionCompat
 import android.view.SurfaceView
+import com.example.libvlc_custom.player.MediaPlayer
 import com.example.libvlc_custom.player.observables.RendererItemObservable
 import org.videolan.libvlc.Media
 import org.videolan.libvlc.RendererItem
+import org.videolan.libvlc.interfaces.IMedia
+import org.videolan.libvlc.interfaces.IVLCVout
 import java.lang.ref.WeakReference
 
 class MediaPlayerServiceBinder constructor(
@@ -101,7 +104,7 @@ class MediaPlayerServiceBinder constructor(
         .get()
         ?.setScale(scale)
 
-    var currentVideoTrack: Media.VideoTrack? = null
+    var currentVideoTrack: IMedia.VideoTrack? = null
         get() = serviceWeakReference
             .get()
             ?.currentVideoTrack
