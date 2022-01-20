@@ -10,13 +10,16 @@ import android.graphics.Bitmap
 import android.media.AudioManager
 import android.net.Uri
 import android.os.Build
+import android.os.FileUtils
 import android.os.IBinder
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import android.util.Log
 import android.view.KeyEvent
 import android.view.SurfaceView
 import android.widget.Toast
+import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.media.session.MediaButtonReceiver
 import com.example.libvlc_custom.R
@@ -30,11 +33,11 @@ import com.example.libvlc_custom.player.utils.ResourceUtils
 import dagger.hilt.android.AndroidEntryPoint
 import org.videolan.libvlc.Dialog
 import org.videolan.libvlc.LibVLC
-import org.videolan.libvlc.Media
 import org.videolan.libvlc.RendererItem
 import org.videolan.libvlc.interfaces.IMedia
 import org.videolan.libvlc.interfaces.IVLCVout
 import java.lang.ref.WeakReference
+import java.util.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -246,21 +249,6 @@ class MediaPlayerService : Service(), MediaPlayer.Callback, Dialog.Callbacks {
         )
     }
 
-    private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            return
-        }
-
-        NotificationUtil.createNotificationChannel(
-            applicationContext,
-            MediaPlayerServiceChannelId,
-            MediaPlayerServiceChannelName,
-            false,
-            false,
-            false
-        )
-    }
-
     private fun getMediaMetadata(bitmap: Bitmap?): MediaMetadataCompat {
         val builder = MediaMetadataCompat.Builder()
 
@@ -332,6 +320,8 @@ class MediaPlayerService : Service(), MediaPlayer.Callback, Dialog.Callbacks {
             .setShowActionsInCompactView(0, 1)
         )
 
+        builder.setStyle(NotificationCompat.)
+
         return builder.build()
     }
 
@@ -343,64 +333,103 @@ class MediaPlayerService : Service(), MediaPlayer.Callback, Dialog.Callbacks {
 
         AudioUtils.requestAudioFocus(
             audioManager!!,
-            audioFocusChangeListener!!.get()
+            audioFocusChangeListener?.get()
         )
     }
 
     override fun onPlayerOpening() {
-        TODO("Not yet implemented")
+        lastUpdateTime = 0L
+
+        updatePlaybackState()
+        updateNotification()
+        callback?.onPlayerOpening()
     }
 
     override fun onPlayerSeekStateChange(canSeek: Boolean) {
-        TODO("Not yet implemented")
+        updatePlaybackState()
+        callback?.onPlayerSeekStateChange(canSeek)
     }
 
     override fun onPlayerPlaying() {
-        TODO("Not yet implemented")
+        updatePlaybackState()
+        updateNotification()
+
+        mediaSession?.isActive = true
+        if (player?.selectedRendererItem != null) {
+            enterForeground()
+        }
+        callback?.onPlayerPlaying()
     }
 
     override fun onPlayerPaused() {
-        TODO("Not yet implemented")
+        updatePlaybackState()
+        updateNotification()
+        callback?.onPlayerPaused()
     }
 
     override fun onPlayerStopped() {
-        TODO("Not yet implemented")
+        updatePlaybackState()
+        updateNotification()
+        mediaSession?.isActive = false
+        stopForeground(true)
+        callback?.onPlayerStopped()
     }
 
     override fun onPlayerEndReached() {
-        TODO("Not yet implemented")
+        updatePlaybackState()
+        updateNotification()
+        mediaSession?.isActive = false
+        callback?.onPlayerEndReached()
     }
 
     override fun onPlayerError() {
-        TODO("Not yet implemented")
+        updatePlaybackState()
+        updateNotification()
+        mediaSession?.isActive = false
+        callback?.onPlayerError()
     }
 
     override fun onPlayerTimeChange(timeChanged: Long) {
-        TODO("Not yet implemented")
+        val time = (player?.time ?: 0) / 1000L
+
+        // At least one second has elapsed, update playback state.
+        if (time >= lastUpdateTime + 1 || time <= lastUpdateTime) {
+            updatePlaybackState()
+            lastUpdateTime = time
+        }
+        callback?.onPlayerTimeChange(timeChanged)
     }
 
     override fun onBuffering(buffering: Float) {
-        TODO("Not yet implemented")
+        updatePlaybackState()
+        callback?.onBuffering(buffering)
     }
 
     override fun onPlayerPositionChanged(positionChanged: Float) {
-        TODO("Not yet implemented")
+        callback?.onPlayerPositionChanged(positionChanged)
     }
 
     override fun onSubtitlesCleared() {
+        callback?.onSubtitlesCleared()
+    }
+
+    override fun onDisplay(errorMessage: Dialog.ErrorMessage?) {
         TODO("Not yet implemented")
     }
 
-    override fun onDisplay(dialog: Dialog.ErrorMessage?) {
+    override fun onDisplay(loginDialog: Dialog.LoginDialog?) {
         TODO("Not yet implemented")
     }
 
-    override fun onDisplay(dialog: Dialog.LoginDialog?) {
-        TODO("Not yet implemented")
-    }
+    override fun onDisplay(questionDialog: Dialog.QuestionDialog) {
+        val dialogTitle = questionDialog.title ?: return
 
-    override fun onDisplay(dialog: Dialog.QuestionDialog?) {
-        TODO("Not yet implemented")
+        when (dialogTitle.lowercase(Locale.getDefault())) {
+            "broken or missing index" -> onBrokenOrMissingIndexDialog(questionDialog)
+            "insecure site" -> onInsecureSiteDialog(questionDialog)
+            "performance warning" -> onPerformanceWarningDialog(questionDialog)
+            else -> Log.w(Tag, "Unhandled dialog: $dialogTitle")
+        }
     }
 
     override fun onDisplay(dialog: Dialog.ProgressDialog?) {
@@ -434,10 +463,13 @@ class MediaPlayerService : Service(), MediaPlayer.Callback, Dialog.Callbacks {
                 return false
             }
             val keyEvent = mediaButtonEvent.getParcelableExtra<KeyEvent>(Intent.EXTRA_KEY_EVENT)
-            when (keyEvent.keyCode) {
+            when (keyEvent?.keyCode) {
                 KeyEvent.KEYCODE_MEDIA_PLAY -> player?.play()
                 KeyEvent.KEYCODE_MEDIA_PAUSE -> player?.pause()
                 KeyEvent.KEYCODE_MEDIA_STOP -> player?.stop()
+                else -> {
+
+                }
             }
             return true
         }
@@ -476,7 +508,7 @@ class MediaPlayerService : Service(), MediaPlayer.Callback, Dialog.Callbacks {
         // Use file descriptor when dealing with content schemas.
         if (schema != null && schema == ContentResolver.SCHEME_CONTENT) {
             player?.setMedia(
-                FileUtil.getUriFileDescriptor(
+                FileUtils.getUriFileDescriptor(
                     context.applicationContext,
                     mediaUri,
                     "r"

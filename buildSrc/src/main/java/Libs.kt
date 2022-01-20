@@ -21,4 +21,8 @@ object Libs {
         const val hiltGradlePlugin = "com.google.dagger:hilt-android-gradle-plugin:$daggerVersion"
     }
 
+    object LibVlc {
+        const val libvlc =  "org.videolan.android:libvlc-all:3.3.13"
+    }
+
 }

@@ -45,6 +45,8 @@ dependencies {
     androidTestImplementation ("androidx.test.ext:junit:1.1.3")
     androidTestImplementation ("androidx.test.espresso:espresso-core:3.4.0")
 
+    implementation(Libs.LibVlc.libvlc)
+
     implementation(Libs.Dagger.hiltAndroid)
     kapt(Libs.Dagger.hiltCompiler)
 

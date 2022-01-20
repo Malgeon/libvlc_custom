@@ -15,7 +15,7 @@ object AudioUtils {
 
     fun requestAudioFocus(
         audioManager: AudioManager,
-        listener: AudioManager.OnAudioFocusChangeListener
+        listener: AudioManager.OnAudioFocusChangeListener?
     ): Boolean {
         val result: Int = audioManager.requestAudioFocus(
             listener,
