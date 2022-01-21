@@ -2,28 +2,35 @@ package com.example.libvlc_custom.di
 
 import android.content.Context
 import com.example.libvlc_custom.player.VlcMediaPlayer
+import com.example.libvlc_custom.player.VlcOptionsProvider
 import dagger.Module
 import dagger.Provides
 import org.videolan.libvlc.LibVLC
+import javax.inject.Singleton
 
 @Module
 class VlcModule {
 
     @Provides
-    internal fun provideLibVlc(context: Context): LibVLC {
+    @Singleton
+    fun provideVlcOptionsProvider(
+        context: Context
+    ): ArrayList<String> =
+        VlcOptionsProvider.Builder(context)
+            .setVerbose(true)
+            .withSubtitleEncoding("KOI8-R")
+            .build()
+
+    @Provides
+    @Singleton
+    fun provideLibVlcTest(
+        context: Context,
+        vlcOptionsProvider: ArrayList<String>,
+    ): LibVLC {
         val appContext = context.applicationContext
-
-        val options = VlcOptionsProvider
-            .getInstance()
-            .options
-
-        return if (options == null || options.size == 0)
-        // No options provided, build defaults.
-            LibVLC(appContext, VlcOptionsProvider.Builder(context).build())
-        else
-        // Use provided options.
-            LibVLC(appContext, options)
+        return LibVLC(appContext, vlcOptionsProvider)
     }
+
 
     @Provides
     internal fun provideVlcMediaPlayer(libVlc: LibVLC): com.masterwok.simplevlcplayer.contracts.VlcMediaPlayer {
