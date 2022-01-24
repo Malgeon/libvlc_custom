@@ -17,5 +17,11 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <com.example.libvlc_custom.player.widget.PlayerControlLayout
+            android:id="@+id/componentPlayerControl"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:hasSelectedRenderer="false"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

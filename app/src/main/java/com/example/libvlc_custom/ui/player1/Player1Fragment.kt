@@ -11,7 +11,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.videolan.libvlc.interfaces.IVLCVout
 
 @AndroidEntryPoint
-class Player1Fragment : MediaPlayerServiceFragment(),
+class Player1Fragment : MediaPlayerServiceFragment()
     , PlayerControlLayout.Callback
     , MediaPlayer.Callback
     , IVLCVout.OnNewVideoLayoutListener{
