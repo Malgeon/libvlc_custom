@@ -8,24 +8,34 @@
         android:layout_height="match_parent"
         tools:context=".ui.player1.Player1Fragment">
 
+        <FrameLayout
+            android:id="@+id/frameLayoutVideoSurface"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:foregroundGravity="clip_horizontal|clip_vertical"
+            tools:ignore="true">
+
+            <SurfaceView
+                android:id="@+id/surfaceViewMedia"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+            <SurfaceView
+                android:id="@+id/surfaceViewSubtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </FrameLayout>
+
 
         <com.example.libvlc_custom.player.widget.PlayerControlOverlay
             android:id="@+id/componentPlayerControl"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="match_parent"
             app:hasSelectedRenderer="false"
-            app:layout_constraintBottom_toTopOf="@+id/extra_area"
             app:layout_constraintTop_toTopOf="parent"/>
 
-        <TextView
-            android:id="@+id/extra_area"
-            android:layout_width="wrap_content"
-            android:layout_height="400dp"
-            android:text="@string/hello_blank_fragment"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/componentPlayerControl" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
