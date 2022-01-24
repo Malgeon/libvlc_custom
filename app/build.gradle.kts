@@ -4,7 +4,6 @@ plugins {
     kotlin("kapt")
     id("dagger.hilt.android.plugin")
     id("androidx.navigation.safeargs.kotlin")
-    id("kotlin-android")
 }
 
 android {
@@ -25,6 +24,11 @@ android {
             isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
+    }
+
+    buildFeatures {
+        viewBinding = true
+        dataBinding = true
     }
 
     compileOptions {

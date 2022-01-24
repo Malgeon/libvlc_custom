@@ -5,16 +5,21 @@ import com.example.libvlc_custom.player.VlcMediaPlayer
 import com.example.libvlc_custom.player.VlcOptionsProvider
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ActivityContext
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
 import org.videolan.libvlc.LibVLC
 import javax.inject.Singleton
 
+@InstallIn(SingletonComponent::class)
 @Module
 class VlcModule {
 
     @Provides
     @Singleton
     fun provideVlcOptionsProvider(
-        context: Context
+        @ApplicationContext context: Context
     ): ArrayList<String> =
         VlcOptionsProvider.Builder(context)
             .setVerbose(true)
@@ -24,7 +29,7 @@ class VlcModule {
     @Provides
     @Singleton
     fun provideLibVlcTest(
-        context: Context,
+        @ApplicationContext context: Context,
         vlcOptionsProvider: ArrayList<String>,
     ): LibVLC {
         val appContext = context.applicationContext
@@ -33,7 +38,8 @@ class VlcModule {
 
 
     @Provides
-    internal fun provideVlcMediaPlayer(libVlc: LibVLC): com.masterwok.simplevlcplayer.contracts.VlcMediaPlayer {
+    @Singleton
+    internal fun provideVlcMediaPlayer(libVlc: LibVLC): VlcMediaPlayer {
         return VlcMediaPlayer(libVlc)
     }
 }
