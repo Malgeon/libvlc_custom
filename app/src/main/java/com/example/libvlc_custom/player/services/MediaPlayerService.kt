@@ -88,6 +88,7 @@ class MediaPlayerService : Service(), MediaPlayer.Callback, Dialog.Callbacks {
 
     override fun onCreate() {
         super.onCreate()
+        Log.e("MediaPlayerService","onCreate")
 
         audioFocusChangeListener = WeakReference(createAudioFocusListener())
         audioManager = AudioUtils.getAudioManager(applicationContext)

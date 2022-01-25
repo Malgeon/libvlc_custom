@@ -14,6 +14,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -122,6 +123,7 @@ class Player1Fragment : MediaPlayerServiceFragment()
     override fun onServiceConnected() {
         serviceBinder?.callback = this
 
+        Log.e("Fragmet","onServiceConnected")
         startPlayback()
     }
 
@@ -202,6 +204,8 @@ class Player1Fragment : MediaPlayerServiceFragment()
 
     private fun startPlayback() {
         binding.surfaceViewMedia.addOnLayoutChangeListener(surfaceLayoutListener)
+
+        Log.e("Fragmet","startPlayBack")
 
         attachSurfaces()
         updateVideoSurfaces()
