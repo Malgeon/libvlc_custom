@@ -122,8 +122,6 @@ class Player1Fragment : MediaPlayerServiceFragment()
 
     override fun onServiceConnected() {
         serviceBinder?.callback = this
-
-        Log.e("Fragmet","onServiceConnected")
         startPlayback()
     }
 
@@ -204,9 +202,6 @@ class Player1Fragment : MediaPlayerServiceFragment()
 
     private fun startPlayback() {
         binding.surfaceViewMedia.addOnLayoutChangeListener(surfaceLayoutListener)
-
-        Log.e("Fragmet","startPlayBack")
-
         attachSurfaces()
         updateVideoSurfaces()
 
@@ -214,12 +209,6 @@ class Player1Fragment : MediaPlayerServiceFragment()
             requireContext()
             , Uri.parse("rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mp4")
         )
-
-        if (setProvidedSubtitle) {
-
-        } else {
-            serviceBinder?.setSubtitle(serviceBinder?.selectedSubtitleUri)
-        }
 
         if (resumeIsPlaying) {
             serviceBinder?.play()

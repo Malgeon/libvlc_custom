@@ -21,7 +21,6 @@ abstract class MediaPlayerServiceFragment : Fragment() {
 
         override fun onServiceConnected(componentName: ComponentName?, binder: IBinder?) {
             serviceBinder = binder as? MediaPlayerServiceBinder
-            Log.e("Fragmet","onServiceConnected")
             onServiceConnected()
         }
     }
@@ -29,7 +28,6 @@ abstract class MediaPlayerServiceFragment : Fragment() {
     protected abstract fun onServiceConnected()
 
     private fun bindMediaPlayerService(): Boolean {
-        Log.e("Fragmet","bindMediaPlayerService")
         return requireActivity().bindService(
             Intent(requireContext().applicationContext, MediaPlayerService::class.java),
             serviceConnection,
@@ -39,7 +37,6 @@ abstract class MediaPlayerServiceFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        Log.e("Fragmet","onStart")
         bindMediaPlayerService()
     }
 

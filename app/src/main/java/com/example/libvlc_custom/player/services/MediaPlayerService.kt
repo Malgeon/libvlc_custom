@@ -436,7 +436,7 @@ class MediaPlayerService : Service(), MediaPlayer.Callback, Dialog.Callbacks {
     }
 
     override fun onDisplay(errorMessage: Dialog.ErrorMessage?) {
-        TODO("Not yet implemented")
+        Log.e("MediaPlayerService","onDisplay")
     }
 
     override fun onDisplay(loginDialog: Dialog.LoginDialog?) {
@@ -525,6 +525,7 @@ class MediaPlayerService : Service(), MediaPlayer.Callback, Dialog.Callbacks {
             return
         }
         setMediaBitmap(mediaUri)
+        Log.e("MediaPlayerService","setMedia")
         player?.setMedia(mediaUri)
     }
 

@@ -95,7 +95,7 @@ class VlcMediaPlayer constructor(
     }
 
     override fun setMedia(uri: Uri?) {
-        player.media = Media(libVlc, testUri)
+        player.media = Media(libVlc, uri)
     }
 
     override fun setSubtitleUri(uri: Uri?) {
@@ -132,8 +132,5 @@ class VlcMediaPlayer constructor(
         player.setRenderer(rendererItem)
     }
 
-    companion object {
-        private val testUri = Uri.parse("")
-    }
 
 }
