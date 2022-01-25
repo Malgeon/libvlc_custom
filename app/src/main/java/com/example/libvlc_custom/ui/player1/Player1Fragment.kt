@@ -8,6 +8,7 @@ import android.content.IntentFilter
 import android.content.res.Configuration
 import android.graphics.PixelFormat
 import android.media.AudioManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -25,14 +26,16 @@ import com.example.libvlc_custom.player.MediaPlayer
 import com.example.libvlc_custom.player.utils.AndroidJob
 import com.example.libvlc_custom.player.utils.ResourceUtil
 import com.example.libvlc_custom.player.utils.SizePolicy
-import com.example.libvlc_custom.player.widget.PlayerControlLayout
+import com.example.libvlc_custom.player.widget.PlayerControlOverlay
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import org.videolan.libvlc.Media
+import org.videolan.libvlc.interfaces.IMedia
 import org.videolan.libvlc.interfaces.IVLCVout
 
 @AndroidEntryPoint
 class Player1Fragment : MediaPlayerServiceFragment()
-    , PlayerControlLayout.Callback
+    , PlayerControlOverlay.Callback
     , MediaPlayer.Callback
     , IVLCVout.OnNewVideoLayoutListener{
 
@@ -113,7 +116,7 @@ class Player1Fragment : MediaPlayerServiceFragment()
     }
 
     private fun subscribeToViewComponents() {
-        componentPlayerControl.registerCallback(this)
+        binding.componentPlayerControl.registerCallback(this)
     }
 
     override fun onServiceConnected() {
@@ -141,19 +144,10 @@ class Player1Fragment : MediaPlayerServiceFragment()
         super.onPause()
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration?) {
-        super.onConfigurationChanged(newConfig)
-        updateVideoSurfaces()
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         val selectedSubtitleUri = serviceBinder?.selectedSubtitleUri
 
         super.onSaveInstanceState(outState.apply {
-            putBoolean(SetProvidedSubtitleKey, selectedSubtitleUri === subtitleUri)
-            putBoolean(IsPlayingKey, resumeIsPlaying)
-            putLong(TimeKey, resumeTime)
-            putLong(LengthKey, resumeLength)
         })
     }
 
@@ -164,10 +158,6 @@ class Player1Fragment : MediaPlayerServiceFragment()
             return
         }
 
-        setProvidedSubtitle = savedInstanceState.getBoolean(SetProvidedSubtitleKey)
-        resumeIsPlaying = savedInstanceState.getBoolean(IsPlayingKey, true)
-        resumeTime = savedInstanceState.getLong(TimeKey, 0)
-        resumeLength = savedInstanceState.getLong(LengthKey, 0)
 
         configure(
             resumeIsPlaying,
@@ -189,7 +179,7 @@ class Player1Fragment : MediaPlayerServiceFragment()
     }
 
     private fun stopPlayback() {
-        surfaceViewSubtitle.removeOnLayoutChangeListener(surfaceLayoutListener)
+        binding.surfaceViewSubtitle.removeOnLayoutChangeListener(surfaceLayoutListener)
 
         updateResumeState()
         serviceBinder?.stop()
@@ -202,8 +192,8 @@ class Player1Fragment : MediaPlayerServiceFragment()
         }
 
         serviceBinder?.attachSurfaces(
-            surfaceViewMedia
-            , surfaceViewSubtitle
+            binding.surfaceViewMedia
+            , binding.surfaceViewSubtitle
             , this
         )
     }
@@ -211,18 +201,18 @@ class Player1Fragment : MediaPlayerServiceFragment()
     private fun detachSurfaces() = serviceBinder?.detachSurfaces()
 
     private fun startPlayback() {
-        surfaceViewMedia.addOnLayoutChangeListener(surfaceLayoutListener)
+        binding.surfaceViewMedia.addOnLayoutChangeListener(surfaceLayoutListener)
 
         attachSurfaces()
         updateVideoSurfaces()
 
         serviceBinder?.setMedia(
             requireContext()
-            , mediaUri
+            , Uri.parse("rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mp4")
         )
 
         if (setProvidedSubtitle) {
-            serviceBinder?.setSubtitle(subtitleUri)
+
         } else {
             serviceBinder?.setSubtitle(serviceBinder?.selectedSubtitleUri)
         }
@@ -236,7 +226,7 @@ class Player1Fragment : MediaPlayerServiceFragment()
         isPlaying: Boolean,
         time: Long,
         length: Long
-    ) = componentPlayerControl.configure(
+    ) = binding.componentPlayerControl.configure(
         isPlaying,
         time,
         length
@@ -306,16 +296,16 @@ class Player1Fragment : MediaPlayerServiceFragment()
     }
 
     override fun onBuffering(buffering: Float) {
-        if (buffering == 100f) {
-            launch(UI, parent = rootJob) { progressBar.visibility = View.GONE }
-            return
-        }
-
-        if (progressBar.visibility == View.VISIBLE) {
-            return
-        }
-
-        launch(UI, parent = rootJob) { progressBar.visibility = View.VISIBLE }
+//        if (buffering == 100f) {
+//            launch(UI, parent = rootJob) { progressBar.visibility = View.GONE }
+//            return
+//        }
+//
+//        if (progressBar.visibility == View.VISIBLE) {
+//            return
+//        }
+//
+//        launch(UI, parent = rootJob) { progressBar.visibility = View.VISIBLE }
     }
 
     override fun onPlayerPositionChanged(positionChanged: Float) {
@@ -333,7 +323,6 @@ class Player1Fragment : MediaPlayerServiceFragment()
             , android.R.attr.progressBarStyleLarge
         ).apply {
             visibility = View.GONE
-            setColor(R.color.progress_bar_spinner)
         }
 
         val params = FrameLayout.LayoutParams(
@@ -358,7 +347,7 @@ class Player1Fragment : MediaPlayerServiceFragment()
             }
             SizePolicy.SURFACE_FIT_SCREEN, SizePolicy.SURFACE_FILL -> {
                 val videoTrack = serviceBinder?.currentVideoTrack ?: return
-                val videoSwapped = videoTrack.orientation == Media.VideoTrack.Orientation.LeftBottom || videoTrack.orientation == Media.VideoTrack.Orientation.RightTop
+                val videoSwapped = videoTrack.orientation == IMedia.VideoTrack.Orientation.LeftBottom || videoTrack.orientation == IMedia.VideoTrack.Orientation.RightTop
                 if (sizePolicy == SizePolicy.SURFACE_FIT_SCREEN) {
                     var videoW = videoTrack.width
                     var videoH = videoTrack.height
