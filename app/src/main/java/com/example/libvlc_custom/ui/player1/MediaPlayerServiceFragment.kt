@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.os.IBinder
+import android.support.v4.media.session.MediaControllerCompat
+import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import androidx.fragment.app.Fragment
 import com.example.libvlc_custom.player.services.MediaPlayerService
@@ -13,6 +15,9 @@ import com.example.libvlc_custom.player.services.MediaPlayerServiceBinder
 abstract class MediaPlayerServiceFragment : Fragment() {
 
     protected var serviceBinder: MediaPlayerServiceBinder? = null
+    private var mediaController: MediaControllerCompat? = null
+    private lateinit var mContext: Context
+
 
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceDisconnected(p0: ComponentName?) {
@@ -22,10 +27,14 @@ abstract class MediaPlayerServiceFragment : Fragment() {
         override fun onServiceConnected(componentName: ComponentName?, binder: IBinder?) {
             serviceBinder = binder as? MediaPlayerServiceBinder
             onServiceConnected()
+            registerMediaController(serviceBinder)
+
         }
     }
 
     protected abstract fun onServiceConnected()
+    protected abstract fun configure(state: PlaybackStateCompat)
+
 
     private fun bindMediaPlayerService(): Boolean {
         return requireActivity().bindService(
@@ -33,6 +42,32 @@ abstract class MediaPlayerServiceFragment : Fragment() {
             serviceConnection,
             Context.BIND_AUTO_CREATE
         )
+    }
+
+    private fun registerMediaController(serviceBinder: MediaPlayerServiceBinder?) {
+        if (serviceBinder == null) {
+            return
+        }
+
+        mediaController = MediaControllerCompat(
+            mContext,
+            serviceBinder.mediaSession!!
+        ).apply {
+            registerCallback(controllerCallback)
+        }
+
+        MediaControllerCompat.setMediaController(requireActivity(), mediaController)
+    }
+
+    private val controllerCallback = object : MediaControllerCompat.Callback() {
+        override fun onPlaybackStateChanged(state: PlaybackStateCompat) {
+            configure(state)
+        }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        mContext = context
     }
 
     override fun onStart() {

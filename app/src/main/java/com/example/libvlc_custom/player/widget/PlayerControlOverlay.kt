@@ -2,6 +2,7 @@ package com.example.libvlc_custom.player.widget
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
@@ -111,7 +112,7 @@ class PlayerControlOverlay @JvmOverloads constructor(
         }
         ThreadUtil.onMain {
             toolbarsAreVisible = true
-            ViewUtils.fadeInViewAboveOrBelowParent(overlayContainer,false)
+            ViewUtils.fadeInViewAboveOrBelowParent(overlayContainer, false)
         }
     }
 
@@ -170,7 +171,7 @@ class PlayerControlOverlay @JvmOverloads constructor(
     }
 
     override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-        TODO("Not yet implemented")
+        Log.e("Progress", "change")
     }
 
     override fun onStartTrackingTouch(seekBar: SeekBar?) {

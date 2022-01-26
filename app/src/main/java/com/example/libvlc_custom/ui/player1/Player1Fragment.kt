@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.graphics.PixelFormat
 import android.media.AudioManager
@@ -40,6 +41,12 @@ class Player1Fragment : MediaPlayerServiceFragment()
     , MediaPlayer.Callback
     , IVLCVout.OnNewVideoLayoutListener{
 
+    companion object {
+        const val IsPlayingKey = "bundle.isplaying"
+        const val LengthKey = "bundle.length"
+        const val TimeKey = "bundle.time"
+    }
+
     private var sizePolicy: SizePolicy = SizePolicy.SURFACE_BEST_FIT
     private var mVideoHeight = 0
     private var mVideoWidth = 0
@@ -72,7 +79,7 @@ class Player1Fragment : MediaPlayerServiceFragment()
             oldBottom: Int
         ) {
 
-            Log.e("Fragment", "updateVideoSurfaces")
+            Log.e("Fragment", "onLayoutChange")
             if (left != oldLeft
                 || top != oldTop
                 || right != oldRight
@@ -88,7 +95,7 @@ class Player1Fragment : MediaPlayerServiceFragment()
     private val becomingNoisyReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
 
-            Log.e("Fragment", "updateVideoSurfaces")
+            Log.e("Fragment", "onReceive")
             if (AudioManager.ACTION_AUDIO_BECOMING_NOISY == intent.action) {
                 // Pause playback whenever the user pulls out ( ͡° ͜ʖ ͡°)
                 serviceBinder?.pause()
@@ -98,7 +105,7 @@ class Player1Fragment : MediaPlayerServiceFragment()
 
     private fun configureSubtitleSurface() = binding.surfaceViewSubtitle.apply {
 
-        Log.e("Fragment", "updateVideoSurfaces")
+        Log.e("Fragment", "configureSubtitleSurface")
         setZOrderMediaOverlay(true)
         holder.setFormat(PixelFormat.TRANSLUCENT)
     }
@@ -124,13 +131,13 @@ class Player1Fragment : MediaPlayerServiceFragment()
 
     private fun subscribeToViewComponents() {
 
-        Log.e("Fragment", "updateVideoSurfaces")
+        Log.e("Fragment", "subscribeToViewComponents")
         binding.componentPlayerControl.registerCallback(this)
     }
 
     override fun onServiceConnected() {
 
-        Log.e("Fragment", "updateVideoSurfaces")
+        Log.e("Fragment", "onServiceConnected")
         serviceBinder?.callback = this
         startPlayback()
     }
@@ -138,7 +145,7 @@ class Player1Fragment : MediaPlayerServiceFragment()
     override fun onResume() {
         super.onResume()
 
-        Log.e("Fragment", "updateVideoSurfaces")
+        Log.e("Fragment", "onResume")
 
         context?.registerReceiver(
             becomingNoisyReceiver,
@@ -157,11 +164,20 @@ class Player1Fragment : MediaPlayerServiceFragment()
         super.onPause()
     }
 
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        updateVideoSurfaces()
+    }
+
+
     override fun onSaveInstanceState(outState: Bundle) {
         val selectedSubtitleUri = serviceBinder?.selectedSubtitleUri
 
         Log.e("Fragment", "onSaveInstanceState")
         super.onSaveInstanceState(outState.apply {
+            putBoolean(IsPlayingKey, resumeIsPlaying)
+            putLong(TimeKey, resumeTime)
+            putLong(LengthKey, resumeLength)
         })
     }
 
@@ -173,6 +189,10 @@ class Player1Fragment : MediaPlayerServiceFragment()
             return
         }
 
+
+        resumeIsPlaying = savedInstanceState.getBoolean(IsPlayingKey, true)
+        resumeTime = savedInstanceState.getLong(TimeKey, 0)
+        resumeLength = savedInstanceState.getLong(LengthKey, 0)
 
         configure(
             resumeIsPlaying,
@@ -246,7 +266,7 @@ class Player1Fragment : MediaPlayerServiceFragment()
         length
     )
 
-    fun configure(state: PlaybackStateCompat) = configure(
+    override fun configure(state: PlaybackStateCompat) = configure(
         state.state == PlaybackStateCompat.STATE_PLAYING,
         state.position,
         state.bufferedPosition
@@ -255,7 +275,9 @@ class Player1Fragment : MediaPlayerServiceFragment()
     override fun onPlayPauseButtonClicked() {
 
         Log.e("Fragment", "onPlayPauseButtonClicked")
-        serviceBinder?.togglePlayback()
+//        serviceBinder?.togglePlayback()
+        requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+
     }
 
     override fun onCastButtonClicked() {
