@@ -71,6 +71,8 @@ class Player1Fragment : MediaPlayerServiceFragment()
             oldRight: Int,
             oldBottom: Int
         ) {
+
+            Log.e("Fragment", "updateVideoSurfaces")
             if (left != oldLeft
                 || top != oldTop
                 || right != oldRight
@@ -85,6 +87,8 @@ class Player1Fragment : MediaPlayerServiceFragment()
 
     private val becomingNoisyReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
+
+            Log.e("Fragment", "updateVideoSurfaces")
             if (AudioManager.ACTION_AUDIO_BECOMING_NOISY == intent.action) {
                 // Pause playback whenever the user pulls out ( ͡° ͜ʖ ͡°)
                 serviceBinder?.pause()
@@ -93,6 +97,8 @@ class Player1Fragment : MediaPlayerServiceFragment()
     }
 
     private fun configureSubtitleSurface() = binding.surfaceViewSubtitle.apply {
+
+        Log.e("Fragment", "updateVideoSurfaces")
         setZOrderMediaOverlay(true)
         holder.setFormat(PixelFormat.TRANSLUCENT)
     }
@@ -117,16 +123,22 @@ class Player1Fragment : MediaPlayerServiceFragment()
     }
 
     private fun subscribeToViewComponents() {
+
+        Log.e("Fragment", "updateVideoSurfaces")
         binding.componentPlayerControl.registerCallback(this)
     }
 
     override fun onServiceConnected() {
+
+        Log.e("Fragment", "updateVideoSurfaces")
         serviceBinder?.callback = this
         startPlayback()
     }
 
     override fun onResume() {
         super.onResume()
+
+        Log.e("Fragment", "updateVideoSurfaces")
 
         context?.registerReceiver(
             becomingNoisyReceiver,
@@ -137,6 +149,7 @@ class Player1Fragment : MediaPlayerServiceFragment()
     override fun onPause() {
         stopPlayback()
 
+        Log.e("Fragment", "onPause")
         serviceBinder?.callback = null
 
         context?.unregisterReceiver(becomingNoisyReceiver)
@@ -147,6 +160,7 @@ class Player1Fragment : MediaPlayerServiceFragment()
     override fun onSaveInstanceState(outState: Bundle) {
         val selectedSubtitleUri = serviceBinder?.selectedSubtitleUri
 
+        Log.e("Fragment", "onSaveInstanceState")
         super.onSaveInstanceState(outState.apply {
         })
     }
@@ -154,6 +168,7 @@ class Player1Fragment : MediaPlayerServiceFragment()
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
 
+        Log.e("Fragment", "onViewStateRestored")
         if (savedInstanceState == null) {
             return
         }
@@ -169,6 +184,7 @@ class Player1Fragment : MediaPlayerServiceFragment()
     private fun updateResumeState() {
         val activity = activity ?: return
 
+        Log.e("Fragment", "updateResumeState")
         val playbackState = MediaControllerCompat
             .getMediaController(activity)
             .playbackState
@@ -181,12 +197,15 @@ class Player1Fragment : MediaPlayerServiceFragment()
     private fun stopPlayback() {
         binding.surfaceViewSubtitle.removeOnLayoutChangeListener(surfaceLayoutListener)
 
+        Log.e("Fragment", "stopPlayback")
         updateResumeState()
         serviceBinder?.stop()
         detachSurfaces()
     }
 
     private fun attachSurfaces() {
+
+        Log.e("Fragment", "attachSurfaces")
         if (serviceBinder?.vOut?.areViewsAttached() == true) {
             return
         }
@@ -201,6 +220,8 @@ class Player1Fragment : MediaPlayerServiceFragment()
     private fun detachSurfaces() = serviceBinder?.detachSurfaces()
 
     private fun startPlayback() {
+
+        Log.e("Fragment", "startPlayback")
         binding.surfaceViewMedia.addOnLayoutChangeListener(surfaceLayoutListener)
         attachSurfaces()
         updateVideoSurfaces()
@@ -232,6 +253,8 @@ class Player1Fragment : MediaPlayerServiceFragment()
     )
 
     override fun onPlayPauseButtonClicked() {
+
+        Log.e("Fragment", "onPlayPauseButtonClicked")
         serviceBinder?.togglePlayback()
     }
 
@@ -240,11 +263,15 @@ class Player1Fragment : MediaPlayerServiceFragment()
     }
 
     override fun onProgressChanged(progress: Int) {
+
+        Log.e("Fragment", "onProgressChanged")
         serviceBinder?.setProgress(progress)
         serviceBinder?.play()
     }
 
     override fun onProgressChangeStarted() {
+
+        Log.e("Fragment", "onProgressChangeStarted")
         serviceBinder?.pause()
     }
 
@@ -289,6 +316,8 @@ class Player1Fragment : MediaPlayerServiceFragment()
     }
 
     override fun onBuffering(buffering: Float) {
+
+        Log.e("Fragment", "onBuffering")
 //        if (buffering == 100f) {
 //            launch(UI, parent = rootJob) { progressBar.visibility = View.GONE }
 //            return
@@ -308,6 +337,7 @@ class Player1Fragment : MediaPlayerServiceFragment()
     override fun onSubtitlesCleared() = startPlayback()
 
     private fun initProgressBar() {
+        Log.e("Fragment", "initProgressBar")
         val context = requireContext()
 
         progressBar = ProgressBar(
@@ -332,6 +362,8 @@ class Player1Fragment : MediaPlayerServiceFragment()
     }
 
     private fun changeMediaPlayerLayout(displayW: Int, displayH: Int) {
+
+        Log.e("Fragment", "changeMediaPlayerLayout")
         /* Change the video placement using the MediaPlayer API */
         when (sizePolicy) {
             SizePolicy.SURFACE_BEST_FIT -> {
@@ -387,6 +419,7 @@ class Player1Fragment : MediaPlayerServiceFragment()
     }
 
     private fun updateVideoSurfaces() {
+        Log.e("Fragment", "updateVideoSurfaces")
         if (activity == null || serviceBinder == null) {
             return
         }
@@ -510,6 +543,8 @@ class Player1Fragment : MediaPlayerServiceFragment()
         sarNum: Int,
         sarDen: Int
     ) {
+
+        Log.e("Fragment", "onNewVideoLayout")
         mVideoWidth = width
         mVideoHeight = height
         mVideoVisibleWidth = visibleWidth
