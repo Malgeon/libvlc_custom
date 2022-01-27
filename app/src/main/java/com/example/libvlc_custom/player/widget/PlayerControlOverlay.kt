@@ -10,11 +10,10 @@ import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.libvlc_custom.R
-import com.example.libvlc_custom.player.utils.ThreadUtil
-import com.example.libvlc_custom.player.utils.TimeUtil
+import com.example.libvlc_custom.player.utils.ThreadUtils
+import com.example.libvlc_custom.player.utils.TimeUtils
 import com.example.libvlc_custom.player.utils.ViewUtils
 
 class PlayerControlOverlay @JvmOverloads constructor(
@@ -97,7 +96,7 @@ class PlayerControlOverlay @JvmOverloads constructor(
             return
         }
         toolbarsAreVisible = false
-        ThreadUtil.onMain {
+        ThreadUtils.onMain {
             ViewUtils.fadeOutViewAboveOrBelowParent(overlayContainer)
         }
     }
@@ -110,9 +109,9 @@ class PlayerControlOverlay @JvmOverloads constructor(
         if (toolbarsAreVisible) {
             return
         }
-        ThreadUtil.onMain {
+        ThreadUtils.onMain {
             toolbarsAreVisible = true
-            ViewUtils.fadeInViewAboveOrBelowParent(overlayContainer, false)
+            ViewUtils.fadeInViewAboveOrBelowParent(overlayContainer)
         }
     }
 
@@ -147,10 +146,10 @@ class PlayerControlOverlay @JvmOverloads constructor(
         time: Long,
         length: Long
     ) {
-        val lengthText: String = TimeUtil.getTimeString(length)
-        val positionText: String = TimeUtil.getTimeString(time)
+        val lengthText: String = TimeUtils.getTimeString(length)
+        val positionText: String = TimeUtils.getTimeString(time)
         val progress = (time.toFloat() / length * 100).toInt()
-        ThreadUtil.onMain {
+        ThreadUtils.onMain {
             imageButtonPlayPause.setImageResource(
                 getPlayPauseDrawableResourceId(isPlaying)
             )

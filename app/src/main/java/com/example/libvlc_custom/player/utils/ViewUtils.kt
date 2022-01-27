@@ -6,11 +6,10 @@ import android.view.View
 object ViewUtils {
 
     fun fadeInViewAboveOrBelowParent(
-        view: View,
-        slideAbove: Boolean
+        view: View
     ) {
         val fadeIn = ObjectAnimator.ofFloat(view, "alpha", 0f, 1f)
-        fadeIn.duration = 1500
+        fadeIn.duration = 500
         fadeIn.start()
     }
 
@@ -18,7 +17,7 @@ object ViewUtils {
         view: View,
     ) {
         val fadeOut = ObjectAnimator.ofFloat(view, "alpha", 1f, 0f)
-        fadeOut.duration = 1500
+        fadeOut.duration = 500
         fadeOut.start()
     }
 }
