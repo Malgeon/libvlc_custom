@@ -35,6 +35,8 @@ class PlayerControlOverlay @JvmOverloads constructor(
     private val overlayContainer: ConstraintLayout
     private val textViewLength: AppCompatTextView
     private val imageButtonPlayPause: AppCompatImageButton
+    private val imageButtonFullScreen: AppCompatImageButton
+
 
 
     init {
@@ -48,12 +50,18 @@ class PlayerControlOverlay @JvmOverloads constructor(
         textViewPosition = root.findViewById(R.id.textview_position)
         textViewLength = root.findViewById(R.id.textview_length)
         imageButtonPlayPause = root.findViewById(R.id.imagebutton_play_pause)
+        imageButtonFullScreen = root.findViewById(R.id.imagebutton_fullscreen)
 
         seekBarPosition.setOnSeekBarChangeListener(this)
         imageButtonPlayPause.setOnClickListener {
             callback.onPlayPauseButtonClicked()
         }
+        imageButtonFullScreen.setOnClickListener {
+            callback.onFullScreenButtonClicked()
+        }
+
         root.setOnClickListener {
+            Log.e("OverLay","Click!")
             handler.removeCallbacksAndMessages(null)
             toggleToolbarVisibility()
         }
@@ -62,14 +70,11 @@ class PlayerControlOverlay @JvmOverloads constructor(
 
     interface Callback {
         fun onPlayPauseButtonClicked()
+        fun onFullScreenButtonClicked()
         fun onCastButtonClicked()
         fun onProgressChanged(progress: Int)
         fun onProgressChangeStarted()
         fun onSubtitlesButtonClicked()
-    }
-
-    private fun inflate(context: Context) {
-        inflate(context, R.layout.player_overlay, this)
     }
 
     /**

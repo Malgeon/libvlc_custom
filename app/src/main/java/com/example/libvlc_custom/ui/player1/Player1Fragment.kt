@@ -275,7 +275,11 @@ class Player1Fragment : MediaPlayerServiceFragment()
     override fun onPlayPauseButtonClicked() {
 
         Log.e("Fragment", "onPlayPauseButtonClicked")
-//        serviceBinder?.togglePlayback()
+        serviceBinder?.togglePlayback()
+
+    }
+
+    override fun onFullScreenButtonClicked() {
         requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
     }
 
