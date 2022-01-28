@@ -247,7 +247,7 @@ class Player1Fragment : MediaPlayerServiceFragment()
         updateVideoSurfaces()
 
         serviceBinder?.setMedia(
-            requireContext()
+            mContext
             , Uri.parse("rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mp4")
         )
 

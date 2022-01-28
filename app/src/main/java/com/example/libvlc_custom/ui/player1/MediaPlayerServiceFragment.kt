@@ -16,16 +16,19 @@ abstract class MediaPlayerServiceFragment : Fragment() {
 
     protected var serviceBinder: MediaPlayerServiceBinder? = null
     private var mediaController: MediaControllerCompat? = null
-    private lateinit var mContext: Context
+    protected lateinit var mContext: Context
 
 
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceDisconnected(p0: ComponentName?) {
+            Log.e("MediaService", "onServiceDisconnected")
+
             serviceBinder = null
         }
 
         override fun onServiceConnected(componentName: ComponentName?, binder: IBinder?) {
             serviceBinder = binder as? MediaPlayerServiceBinder
+            Log.e("MediaService", "onServiceConnected")
             onServiceConnected()
             registerMediaController(serviceBinder)
 
@@ -37,8 +40,10 @@ abstract class MediaPlayerServiceFragment : Fragment() {
 
 
     private fun bindMediaPlayerService(): Boolean {
+        Log.e("MediaService", "bindMediaPlayerService")
+
         return requireActivity().bindService(
-            Intent(requireContext().applicationContext, MediaPlayerService::class.java),
+            Intent(mContext.applicationContext, MediaPlayerService::class.java),
             serviceConnection,
             Context.BIND_AUTO_CREATE
         )

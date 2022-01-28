@@ -88,7 +88,7 @@ class MediaPlayerService : Service(), MediaPlayer.Callback, Dialog.Callbacks {
 
     override fun onCreate() {
         super.onCreate()
-        Log.e("MediaPlayerService","onCreate")
+
 
         audioFocusChangeListener = WeakReference(createAudioFocusListener())
         audioManager = AudioUtils.getAudioManager(applicationContext)
@@ -115,9 +115,12 @@ class MediaPlayerService : Service(), MediaPlayer.Callback, Dialog.Callbacks {
             rendererItemObservable = RendererItemObservable(it)
             rendererItemObservable?.start()
         }
+
+        Log.e("MediaPlayerService","onCreate")
     }
 
     override fun onDestroy() {
+        Log.e("MediaPlayerService","onDestroy")
         stopForeground(true)
         Dialog.setCallbacks(libVlc, null)
         player?.release()
