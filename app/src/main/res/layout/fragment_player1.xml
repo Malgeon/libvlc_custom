@@ -5,7 +5,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="360dp"
         tools:context=".ui.player1.Player1Fragment">
 
         <FrameLayout
@@ -28,13 +28,15 @@
 
         </FrameLayout>
 
-
         <com.example.libvlc_custom.player.widget.PlayerControlOverlay
             android:id="@+id/componentPlayerControl"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             app:hasSelectedRenderer="false"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="@+id/frameLayoutVideoSurface"
+            app:layout_constraintStart_toStartOf="@id/frameLayoutVideoSurface"
+            app:layout_constraintEnd_toEndOf="@id/frameLayoutVideoSurface"
+            app:layout_constraintBottom_toBottomOf="@id/frameLayoutVideoSurface"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
