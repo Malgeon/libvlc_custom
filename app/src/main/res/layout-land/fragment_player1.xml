@@ -11,7 +11,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/player_container"
             android:layout_width="match_parent"
-            android:layout_height="240dp"
+            android:layout_height="match_parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <FrameLayout
@@ -45,37 +45,7 @@
                 app:layout_constraintStart_toStartOf="@id/frameLayoutVideoSurface"
                 app:layout_constraintEnd_toEndOf="@id/frameLayoutVideoSurface"
                 app:layout_constraintBottom_toBottomOf="@id/frameLayoutVideoSurface"/>
-
-
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <TextView
-            android:id="@+id/below_text1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            tools:text="연습장1"
-            app:layout_constraintTop_toBottomOf="@+id/player_container"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <TextView
-            android:id="@+id/below_text2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            tools:text="연습장2"
-            app:layout_constraintTop_toBottomOf="@+id/below_text1"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <TextView
-            android:id="@+id/below_text3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            tools:text="연습장3"
-            app:layout_constraintTop_toBottomOf="@+id/below_text2"
-            app:layout_constraintStart_toStartOf="parent" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
