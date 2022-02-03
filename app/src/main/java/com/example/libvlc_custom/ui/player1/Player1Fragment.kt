@@ -22,6 +22,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ProgressBar
+import androidx.fragment.app.viewModels
 import com.example.libvlc_custom.R
 import com.example.libvlc_custom.databinding.FragmentPlayer1Binding
 import com.example.libvlc_custom.player.MediaPlayer
@@ -30,8 +31,6 @@ import com.example.libvlc_custom.player.utils.ResourceUtil
 import com.example.libvlc_custom.player.utils.SizePolicy
 import com.example.libvlc_custom.player.widget.PlayerControlOverlay
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
-import org.videolan.libvlc.Media
 import org.videolan.libvlc.interfaces.IMedia
 import org.videolan.libvlc.interfaces.IVLCVout
 
@@ -63,6 +62,7 @@ class Player1Fragment : MediaPlayerServiceFragment()
     private val handler = Handler()
 
     private lateinit var progressBar: ProgressBar
+    private val playerViewModel:PlayerViewModel by viewModels()
 
     private val surfaceLayoutListener = object : View.OnLayoutChangeListener {
         private val mRunnable = { updateVideoSurfaces() }
@@ -115,7 +115,6 @@ class Player1Fragment : MediaPlayerServiceFragment()
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         binding = FragmentPlayer1Binding.inflate(inflater, container, false)
         // Inflate the layout for this fragment
         return binding.root
@@ -123,10 +122,22 @@ class Player1Fragment : MediaPlayerServiceFragment()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initProgressBar()
         subscribeToViewComponents()
         configureSubtitleSurface()
+        playerViewModel.setFullscreenState(false)
+        playerViewModel.isFullScreen.observe(viewLifecycleOwner) {
+            activeFullscreen(it)
+        }
+    }
+
+    private fun activeFullscreen(flag: Boolean) {
+        if(flag) {
+            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+        } else {
+            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
+        }
+
     }
 
     private fun subscribeToViewComponents() {
@@ -273,14 +284,19 @@ class Player1Fragment : MediaPlayerServiceFragment()
     )
 
     override fun onPlayPauseButtonClicked() {
-
         Log.e("Fragment", "onPlayPauseButtonClicked")
         serviceBinder?.togglePlayback()
-
     }
 
     override fun onFullScreenButtonClicked() {
-        requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+        val currentState = playerViewModel.isFullScreen.value
+        manageFullscreen(currentState)
+    }
+
+    private fun manageFullscreen(flag: Boolean?) {
+        flag?.let {
+            playerViewModel.setFullscreenState(!it)
+        } ?: playerViewModel.setFullscreenState(false)
     }
 
     override fun onCastButtonClicked() {
