@@ -170,6 +170,16 @@ class PlayerControlOverlay @JvmOverloads constructor(
         }
     }
 
+    fun setFullscreen(isFullscreen: Boolean) {
+        imageButtonFullScreen.setImageResource(
+            getFullscreenDrawableResourceId(isFullscreen)
+        )
+    }
+
+    private fun getFullscreenDrawableResourceId(isFullscreen: Boolean): Int {
+        return if (isFullscreen) R.drawable.ic_fullscreen_exit_24 else R.drawable.ic_fullscreen_24
+    }
+
     fun registerCallback(callback: Callback) {
         this.callback = callback
     }

@@ -128,15 +128,20 @@ class Player1Fragment : MediaPlayerServiceFragment()
         playerViewModel.setFullscreenState(false)
         playerViewModel.isFullScreen.observe(viewLifecycleOwner) {
             activeFullscreen(it)
+            binding.componentPlayerControl.setFullscreen(it)
         }
     }
 
 
     private fun activeFullscreen(flag: Boolean) {
+        val thisFlag = ActivityInfo.SCREEN_ORIENTATION_SENSOR
         if(flag) {
             requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+//            requireActivity().requestedOrientation = thisFlag
         } else {
-            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
+            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
+//            requireActivity().requestedOrientation = thisFlag
+
         }
 
     }
@@ -152,6 +157,14 @@ class Player1Fragment : MediaPlayerServiceFragment()
         Log.e("Fragment", "onServiceConnected")
         serviceBinder?.callback = this
         startPlayback()
+    }
+
+    override fun openFullscreen() {
+        Log.e("fragment", "open fullscreen")
+    }
+
+    override fun closeFullscreen() {
+        Log.e("fragment", "close fullscreen")
     }
 
     override fun onResume() {

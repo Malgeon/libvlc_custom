@@ -41,14 +41,18 @@ abstract class MediaPlayerServiceFragment : Fragment() {
         super.onConfigurationChanged(newConfig)
         if(newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
             Toast.makeText(mContext, "세로모드", Toast.LENGTH_SHORT).show()
+            closeFullscreen()
         }
 
         if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             Toast.makeText(mContext, "가로모드", Toast.LENGTH_SHORT).show()
+            openFullscreen()
         }
     }
 
     protected abstract fun onServiceConnected()
+    protected abstract fun openFullscreen()
+    protected abstract fun closeFullscreen()
     protected abstract fun configure(state: PlaybackStateCompat)
 
 
