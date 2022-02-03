@@ -4,10 +4,12 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.content.res.Configuration
 import android.os.IBinder
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.libvlc_custom.player.services.MediaPlayerService
 import com.example.libvlc_custom.player.services.MediaPlayerServiceBinder
@@ -32,6 +34,17 @@ abstract class MediaPlayerServiceFragment : Fragment() {
             onServiceConnected()
             registerMediaController(serviceBinder)
 
+        }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        if(newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            Toast.makeText(mContext, "세로모드", Toast.LENGTH_SHORT).show()
+        }
+
+        if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Toast.makeText(mContext, "가로모드", Toast.LENGTH_SHORT).show()
         }
     }
 

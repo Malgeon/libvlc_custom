@@ -131,11 +131,12 @@ class Player1Fragment : MediaPlayerServiceFragment()
         }
     }
 
+
     private fun activeFullscreen(flag: Boolean) {
         if(flag) {
             requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
         } else {
-            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
+            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR
         }
 
     }

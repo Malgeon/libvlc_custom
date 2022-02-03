@@ -32,60 +32,59 @@
             tools:ignore="ContentDescription,MissingPrefix,VectorDrawableCompat" />
 
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar_vlc_player"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/footer_vlc_player"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="?attr/actionBarSize"
             android:theme="@style/AppTheme.PlayerComponentToolbar"
             app:layout_constraintBottom_toBottomOf="parent">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+
+            <SeekBar
+                android:id="@+id/seekbar_position"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:theme="@style/AppTheme.PlayerSeekBar"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
-                <SeekBar
-                    android:id="@+id/seekbar_position"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginBottom="10dp"
-                    android:theme="@style/AppTheme.PlayerSeekBar"
-                    app:layout_constraintBottom_toBottomOf="parent" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textview_position"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="8dp"
+                android:textColor="@color/player_toolbar_text_position"
+                app:layout_constraintBottom_toTopOf="@+id/seekbar_position"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:ignore="RtlHardcoded" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/textview_position"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="20dp"
-                    android:textColor="@color/player_toolbar_text_position"
-                    app:layout_constraintBottom_toTopOf="@+id/seekbar_position"
-                    app:layout_constraintStart_toStartOf="parent"
-                    tools:ignore="RtlHardcoded" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textview_length"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:textColor="@color/player_toolbar_text_length"
+                app:layout_constraintBottom_toTopOf="@+id/seekbar_position"
+                app:layout_constraintStart_toEndOf="@id/textview_position"
+                tools:ignore="RtlHardcoded" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/textview_length"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/player_toolbar_text_length"
-                    app:layout_constraintBottom_toTopOf="@+id/seekbar_position"
-                    app:layout_constraintStart_toEndOf="@id/textview_position"
-                    tools:ignore="RtlHardcoded" />
-
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/imagebutton_fullscreen"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:background="@android:color/transparent"
-                    android:layout_marginEnd="8dp"
-                    app:layout_constraintBottom_toTopOf="@id/seekbar_position"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:srcCompat="@drawable/ic_fullscreen_24"
-                    tools:ignore="ContentDescription,MissingPrefix,VectorDrawableCompat" />
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/imagebutton_fullscreen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:background="@android:color/transparent"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toTopOf="@id/seekbar_position"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:srcCompat="@drawable/ic_fullscreen_24"
+                tools:ignore="ContentDescription,MissingPrefix,VectorDrawableCompat" />
 
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.appcompat.widget.Toolbar>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </merge>
