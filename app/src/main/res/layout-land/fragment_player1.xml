@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.player1.Player1Fragment">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/player_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <FrameLayout
+                android:id="@+id/frameLayoutVideoSurface"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:foregroundGravity="clip_horizontal|clip_vertical"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="true">
+
+                <SurfaceView
+                    android:id="@+id/surfaceViewMedia"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+                <SurfaceView
+                    android:id="@+id/surfaceViewSubtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            </FrameLayout>
+
+
+            <com.example.libvlc_custom.player.widget.PlayerControlOverlay
+                android:id="@+id/componentPlayerControl"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:hasSelectedRenderer="false"
+                app:layout_constraintTop_toTopOf="@id/frameLayoutVideoSurface"
+                app:layout_constraintStart_toStartOf="@id/frameLayoutVideoSurface"
+                app:layout_constraintEnd_toEndOf="@id/frameLayoutVideoSurface"
+                app:layout_constraintBottom_toBottomOf="@id/frameLayoutVideoSurface"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</layout>

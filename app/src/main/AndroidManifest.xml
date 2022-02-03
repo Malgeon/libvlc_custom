@@ -15,7 +15,6 @@
         android:theme="@style/Theme.Libvlc_custom">
         <activity
             android:name="com.example.libvlc_custom.MainActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

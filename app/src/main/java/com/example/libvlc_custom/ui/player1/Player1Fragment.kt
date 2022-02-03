@@ -22,6 +22,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ProgressBar
+import androidx.databinding.DataBindingUtil.setContentView
 import androidx.fragment.app.viewModels
 import com.example.libvlc_custom.R
 import com.example.libvlc_custom.databinding.FragmentPlayer1Binding
@@ -125,7 +126,6 @@ class Player1Fragment : MediaPlayerServiceFragment()
         initProgressBar()
         subscribeToViewComponents()
         configureSubtitleSurface()
-        playerViewModel.setFullscreenState(false)
         playerViewModel.isFullScreen.observe(viewLifecycleOwner) {
             activeFullscreen(it)
             binding.componentPlayerControl.setFullscreen(it)
@@ -133,13 +133,15 @@ class Player1Fragment : MediaPlayerServiceFragment()
     }
 
 
+
+
     private fun activeFullscreen(flag: Boolean) {
         val thisFlag = ActivityInfo.SCREEN_ORIENTATION_SENSOR
         if(flag) {
-            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 //            requireActivity().requestedOrientation = thisFlag
         } else {
-            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
+            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 //            requireActivity().requestedOrientation = thisFlag
 
         }
