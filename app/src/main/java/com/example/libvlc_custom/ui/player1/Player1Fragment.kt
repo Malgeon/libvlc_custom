@@ -21,7 +21,6 @@ import android.view.*
 import android.widget.FrameLayout
 import android.widget.ProgressBar
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.databinding.DataBindingUtil.setContentView
 import androidx.fragment.app.viewModels
 import com.example.libvlc_custom.R
 import com.example.libvlc_custom.databinding.FragmentPlayer1Binding
@@ -35,10 +34,8 @@ import org.videolan.libvlc.interfaces.IMedia
 import org.videolan.libvlc.interfaces.IVLCVout
 
 @AndroidEntryPoint
-class Player1Fragment : MediaPlayerServiceFragment()
-    , PlayerControlOverlay.Callback
-    , MediaPlayer.Callback
-    , IVLCVout.OnNewVideoLayoutListener{
+class Player1Fragment : MediaPlayerServiceFragment(), PlayerControlOverlay.Callback,
+    MediaPlayer.Callback, IVLCVout.OnNewVideoLayoutListener {
 
     private val rtspUrl = TestUrl
 
@@ -48,6 +45,7 @@ class Player1Fragment : MediaPlayerServiceFragment()
         const val TimeKey = "bundle.time"
         const val TempUrl = ""
         const val TestUrl = "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mp4"
+        private const val UI_ANIMATION_DELAY = 300
     }
 
     private var sizePolicy: SizePolicy = SizePolicy.SURFACE_BEST_FIT
@@ -64,9 +62,10 @@ class Player1Fragment : MediaPlayerServiceFragment()
 
     private val rootJob: AndroidJob = AndroidJob(lifecycle)
     private val handler = Handler()
+    private val hideHandler = Handler()
 
     private lateinit var progressBar: ProgressBar
-    private val playerViewModel:PlayerViewModel by viewModels()
+    private val playerViewModel: PlayerViewModel by viewModels()
 
     private val surfaceLayoutListener = object : View.OnLayoutChangeListener {
         private val mRunnable = { updateVideoSurfaces() }
@@ -87,7 +86,8 @@ class Player1Fragment : MediaPlayerServiceFragment()
             if (left != oldLeft
                 || top != oldTop
                 || right != oldRight
-                || bottom != oldBottom) {
+                || bottom != oldBottom
+            ) {
                 handler.removeCallbacks(mRunnable)
                 handler.post(mRunnable)
             }
@@ -136,39 +136,57 @@ class Player1Fragment : MediaPlayerServiceFragment()
     }
 
     private fun controlWindowInsets(hide: Boolean) {
-        if(hide) {
+        if (hide) {
             hideSystemUI()
         } else {
             showSystemUI()
         }
     }
 
-    private val hideScreenRunnalbe = Runnable {
+    private val hideScreenRunnable = Runnable{
+    requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+    requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        requireActivity().window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                )
+    }
+
+    private val showScreenRunnable = Runnable {
+        binding.toolbar.visibility = View.VISIBLE
 
     }
 
     private fun hideSystemUI() {
-        requireActivity().window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE
-                // Set the content to appear under the system bars so that the
-                // content doesn't resize when the system bars hide and show.
-                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                // Hide the nav bar and status bar
-                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_FULLSCREEN)
+        binding.toolbar.visibility = View.GONE
+
+        hideHandler.removeCallbacks(showScreenRunnable)
+        hideHandler.postDelayed(hideScreenRunnable, UI_ANIMATION_DELAY.toLong())
+
     }
 
     private fun showSystemUI() {
-        requireActivity().window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
+//        requireActivity().window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+//                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+//                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+
+        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        requireActivity().window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+        hideHandler.removeCallbacks(hideScreenRunnable)
+        hideHandler.postDelayed(showScreenRunnable, UI_ANIMATION_DELAY.toLong())
     }
 
 
     private fun activeFullscreen(flag: Boolean) {
         val thisFlag = ActivityInfo.SCREEN_ORIENTATION_SENSOR
-        if(flag) {
-            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+        if (flag) {
+            requireActivity().requestedOrientation =
+                ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
 //            requireActivity().requestedOrientation = thisFlag
         } else {
             requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
@@ -193,8 +211,8 @@ class Player1Fragment : MediaPlayerServiceFragment()
 
     override fun openFullscreen() {
         Log.e("fragment", "open fullscreen")
-        binding.toolbar.visibility = View.GONE
-        val params: ConstraintLayout.LayoutParams = binding.playerContainer.layoutParams as ConstraintLayout.LayoutParams
+        val params: ConstraintLayout.LayoutParams =
+            binding.playerContainer.layoutParams as ConstraintLayout.LayoutParams
         params.width = ConstraintLayout.LayoutParams.MATCH_PARENT
         params.height = ConstraintLayout.LayoutParams.MATCH_PARENT
         controlWindowInsets(hide = true)
@@ -202,10 +220,12 @@ class Player1Fragment : MediaPlayerServiceFragment()
 
     override fun closeFullscreen() {
         Log.e("fragment", "close fullscreen")
-        binding.toolbar.visibility = View.VISIBLE
-        val params: ConstraintLayout.LayoutParams = binding.playerContainer.layoutParams as ConstraintLayout.LayoutParams
+        val params: ConstraintLayout.LayoutParams =
+            binding.playerContainer.layoutParams as ConstraintLayout.LayoutParams
         params.width = ConstraintLayout.LayoutParams.MATCH_PARENT
-        params.height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,300F, resources.displayMetrics).toInt()
+        params.height =
+            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 300F, resources.displayMetrics)
+                .toInt()
         controlWindowInsets(hide = false)
     }
 
@@ -298,9 +318,7 @@ class Player1Fragment : MediaPlayerServiceFragment()
         }
 
         serviceBinder?.attachSurfaces(
-            binding.surfaceViewMedia
-            , binding.surfaceViewSubtitle
-            , this
+            binding.surfaceViewMedia, binding.surfaceViewSubtitle, this
         )
     }
 
@@ -314,8 +332,7 @@ class Player1Fragment : MediaPlayerServiceFragment()
         updateVideoSurfaces()
 
         serviceBinder?.setMedia(
-            mContext
-            , Uri.parse(rtspUrl)
+            mContext, Uri.parse(rtspUrl)
         )
 
         if (resumeIsPlaying) {
@@ -438,9 +455,7 @@ class Player1Fragment : MediaPlayerServiceFragment()
         val context = requireContext()
 
         progressBar = ProgressBar(
-            context
-            , null
-            , android.R.attr.progressBarStyleLarge
+            context, null, android.R.attr.progressBarStyleLarge
         ).apply {
             visibility = View.GONE
         }
@@ -453,8 +468,7 @@ class Player1Fragment : MediaPlayerServiceFragment()
         }
 
         (view as ViewGroup).addView(
-            progressBar
-            , params
+            progressBar, params
         )
     }
 
@@ -469,7 +483,8 @@ class Player1Fragment : MediaPlayerServiceFragment()
             }
             SizePolicy.SURFACE_FIT_SCREEN, SizePolicy.SURFACE_FILL -> {
                 val videoTrack = serviceBinder?.currentVideoTrack ?: return
-                val videoSwapped = videoTrack.orientation == IMedia.VideoTrack.Orientation.LeftBottom || videoTrack.orientation == IMedia.VideoTrack.Orientation.RightTop
+                val videoSwapped =
+                    videoTrack.orientation == IMedia.VideoTrack.Orientation.LeftBottom || videoTrack.orientation == IMedia.VideoTrack.Orientation.RightTop
                 if (sizePolicy == SizePolicy.SURFACE_FIT_SCREEN) {
                     var videoW = videoTrack.width
                     var videoH = videoTrack.height
@@ -494,10 +509,12 @@ class Player1Fragment : MediaPlayerServiceFragment()
                     serviceBinder?.setAspectRatio(null)
                 } else {
                     serviceBinder?.setScale(0f)
-                    serviceBinder?.setAspectRatio(if (!videoSwapped)
-                        "$displayW:$displayH"
-                    else
-                        "$displayH:$displayW")
+                    serviceBinder?.setAspectRatio(
+                        if (!videoSwapped)
+                            "$displayW:$displayH"
+                        else
+                            "$displayH:$displayW"
+                    )
                 }
             }
             SizePolicy.SURFACE_16_9 -> {
