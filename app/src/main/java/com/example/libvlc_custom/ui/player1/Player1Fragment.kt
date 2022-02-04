@@ -41,7 +41,7 @@ class Player1Fragment : MediaPlayerServiceFragment()
     , MediaPlayer.Callback
     , IVLCVout.OnNewVideoLayoutListener{
 
-    private val RtspUrl = TestUrl
+    private val rtspUrl = TempUrl
 
     companion object {
         const val IsPlayingKey = "bundle.isplaying"
@@ -279,7 +279,7 @@ class Player1Fragment : MediaPlayerServiceFragment()
 
         serviceBinder?.setMedia(
             mContext
-            , Uri.parse(RtspUrl)
+            , Uri.parse(rtspUrl)
         )
 
         if (resumeIsPlaying) {

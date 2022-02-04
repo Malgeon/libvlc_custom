@@ -11,7 +11,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/player_container"
             android:layout_width="match_parent"
-            android:layout_height="240dp"
+            android:layout_height="300dp"
+            android:background="@color/black"
             app:layout_constraintTop_toTopOf="parent">
 
             <FrameLayout
@@ -21,6 +22,9 @@
                 android:layout_gravity="center"
                 android:foregroundGravity="clip_horizontal|clip_vertical"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 tools:ignore="true">
 
                 <SurfaceView
@@ -34,18 +38,15 @@
                     android:layout_height="wrap_content"/>
             </FrameLayout>
 
-
             <com.example.libvlc_custom.player.widget.PlayerControlOverlay
                 android:id="@+id/componentPlayerControl"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 app:hasSelectedRenderer="false"
-                app:layout_constraintTop_toTopOf="@id/frameLayoutVideoSurface"
-                app:layout_constraintStart_toStartOf="@id/frameLayoutVideoSurface"
-                app:layout_constraintEnd_toEndOf="@id/frameLayoutVideoSurface"
-                app:layout_constraintBottom_toBottomOf="@id/frameLayoutVideoSurface"/>
-
-
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView

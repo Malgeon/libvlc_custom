@@ -55,7 +55,7 @@ object TimeUtils {
         if (hours == 0L && minutes == 0L) {
             return String.format(
                 Locale.US,
-                "%d",
+                "0:%02d",
                 seconds
             )
         }

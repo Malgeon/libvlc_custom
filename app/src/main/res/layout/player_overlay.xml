@@ -53,11 +53,27 @@
                 android:id="@+id/textview_position"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="20dp"
                 android:layout_marginBottom="8dp"
-                android:textColor="@color/player_toolbar_text_position"
+                android:layout_marginStart="8dp"
+                android:textSize="12sp"
+                android:textColor="@color/player_toolbar_text_length"
                 app:layout_constraintBottom_toTopOf="@+id/seekbar_position"
                 app:layout_constraintStart_toStartOf="parent"
+                tools:text="0:00"
+                tools:ignore="RtlHardcoded" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/position_length_quoter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp"
+                android:text="/"
+                android:textSize="12sp"
+                android:textColor="@color/player_toolbar_text_length"
+                app:layout_constraintBottom_toTopOf="@+id/seekbar_position"
+                app:layout_constraintStart_toEndOf="@id/textview_position"
                 tools:ignore="RtlHardcoded" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -65,9 +81,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
+                android:textSize="12sp"
                 android:textColor="@color/player_toolbar_text_length"
+                tools:text="0:00"
                 app:layout_constraintBottom_toTopOf="@+id/seekbar_position"
-                app:layout_constraintStart_toEndOf="@id/textview_position"
+                app:layout_constraintStart_toEndOf="@id/position_length_quoter"
                 tools:ignore="RtlHardcoded" />
 
             <androidx.appcompat.widget.AppCompatImageButton
