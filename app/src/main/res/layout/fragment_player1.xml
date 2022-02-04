@@ -4,16 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/root_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".ui.player1.Player1Fragment">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:title="툴바"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/player_container"
             android:layout_width="match_parent"
             android:layout_height="300dp"
             android:background="@color/black"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@id/toolbar">
 
             <FrameLayout
                 android:id="@+id/frameLayoutVideoSurface"
@@ -21,21 +29,21 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:foregroundGravity="clip_horizontal|clip_vertical"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="true">
 
                 <SurfaceView
                     android:id="@+id/surfaceViewMedia"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent" />
 
                 <SurfaceView
                     android:id="@+id/surfaceViewSubtitle"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content" />
             </FrameLayout>
 
             <com.example.libvlc_custom.player.widget.PlayerControlOverlay
@@ -43,39 +51,39 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 app:hasSelectedRenderer="false"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
             android:id="@+id/below_text1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
             android:text="연습장1"
-            tools:text="연습장1"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/player_container"
-            app:layout_constraintStart_toStartOf="parent" />
+            tools:text="연습장1" />
 
         <TextView
             android:id="@+id/below_text2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
-            tools:text="연습장2"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/below_text1"
-            app:layout_constraintStart_toStartOf="parent" />
+            tools:text="연습장2" />
 
         <TextView
             android:id="@+id/below_text3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
-            tools:text="연습장3"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/below_text2"
-            app:layout_constraintStart_toStartOf="parent" />
+            tools:text="연습장3" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

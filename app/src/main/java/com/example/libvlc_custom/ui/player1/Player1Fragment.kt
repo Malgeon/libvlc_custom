@@ -16,12 +16,11 @@ import android.os.Handler
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.util.TypedValue
+import android.view.*
 import android.widget.FrameLayout
 import android.widget.ProgressBar
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.DataBindingUtil.setContentView
 import androidx.fragment.app.viewModels
 import com.example.libvlc_custom.R
@@ -41,7 +40,7 @@ class Player1Fragment : MediaPlayerServiceFragment()
     , MediaPlayer.Callback
     , IVLCVout.OnNewVideoLayoutListener{
 
-    private val rtspUrl = TempUrl
+    private val rtspUrl = TestUrl
 
     companion object {
         const val IsPlayingKey = "bundle.isplaying"
@@ -136,7 +135,34 @@ class Player1Fragment : MediaPlayerServiceFragment()
         }
     }
 
+    private fun controlWindowInsets(hide: Boolean) {
+        if(hide) {
+            hideSystemUI()
+        } else {
+            showSystemUI()
+        }
+    }
 
+    private val hideScreenRunnalbe = Runnable {
+
+    }
+
+    private fun hideSystemUI() {
+        requireActivity().window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE
+                // Set the content to appear under the system bars so that the
+                // content doesn't resize when the system bars hide and show.
+                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                // Hide the nav bar and status bar
+                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_FULLSCREEN)
+    }
+
+    private fun showSystemUI() {
+        requireActivity().window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
+    }
 
 
     private fun activeFullscreen(flag: Boolean) {
@@ -167,10 +193,20 @@ class Player1Fragment : MediaPlayerServiceFragment()
 
     override fun openFullscreen() {
         Log.e("fragment", "open fullscreen")
+        binding.toolbar.visibility = View.GONE
+        val params: ConstraintLayout.LayoutParams = binding.playerContainer.layoutParams as ConstraintLayout.LayoutParams
+        params.width = ConstraintLayout.LayoutParams.MATCH_PARENT
+        params.height = ConstraintLayout.LayoutParams.MATCH_PARENT
+        controlWindowInsets(hide = true)
     }
 
     override fun closeFullscreen() {
         Log.e("fragment", "close fullscreen")
+        binding.toolbar.visibility = View.VISIBLE
+        val params: ConstraintLayout.LayoutParams = binding.playerContainer.layoutParams as ConstraintLayout.LayoutParams
+        params.width = ConstraintLayout.LayoutParams.MATCH_PARENT
+        params.height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,300F, resources.displayMetrics).toInt()
+        controlWindowInsets(hide = false)
     }
 
     override fun onResume() {

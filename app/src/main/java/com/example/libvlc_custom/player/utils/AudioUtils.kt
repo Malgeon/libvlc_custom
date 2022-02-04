@@ -1,6 +1,5 @@
 package com.example.libvlc_custom.player.utils
 
-import android.app.NotificationManager
 import android.content.Context
 import android.media.AudioAttributes
 import android.media.AudioFocusRequest
