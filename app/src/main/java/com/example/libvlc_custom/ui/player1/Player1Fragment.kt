@@ -41,10 +41,14 @@ class Player1Fragment : MediaPlayerServiceFragment()
     , MediaPlayer.Callback
     , IVLCVout.OnNewVideoLayoutListener{
 
+    private val RtspUrl = TestUrl
+
     companion object {
         const val IsPlayingKey = "bundle.isplaying"
         const val LengthKey = "bundle.length"
         const val TimeKey = "bundle.time"
+        const val TempUrl = ""
+        const val TestUrl = "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mp4"
     }
 
     private var sizePolicy: SizePolicy = SizePolicy.SURFACE_BEST_FIT
@@ -138,10 +142,10 @@ class Player1Fragment : MediaPlayerServiceFragment()
     private fun activeFullscreen(flag: Boolean) {
         val thisFlag = ActivityInfo.SCREEN_ORIENTATION_SENSOR
         if(flag) {
-            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
 //            requireActivity().requestedOrientation = thisFlag
         } else {
-            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
 //            requireActivity().requestedOrientation = thisFlag
 
         }
@@ -275,7 +279,7 @@ class Player1Fragment : MediaPlayerServiceFragment()
 
         serviceBinder?.setMedia(
             mContext
-            , Uri.parse("rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mp4")
+            , Uri.parse(RtspUrl)
         )
 
         if (resumeIsPlaying) {
