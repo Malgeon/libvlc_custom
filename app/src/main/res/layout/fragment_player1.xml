@@ -51,6 +51,7 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 app:hasSelectedRenderer="false"
+                app:showSubtitle="영상 제목 입니다"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

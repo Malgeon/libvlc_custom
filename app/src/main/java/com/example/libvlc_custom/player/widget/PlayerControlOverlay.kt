@@ -1,6 +1,7 @@
 package com.example.libvlc_custom.player.widget
 
 import android.content.Context
+import android.os.Handler
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,6 +11,7 @@ import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.libvlc_custom.R
 import com.example.libvlc_custom.player.utils.ThreadUtils
@@ -28,7 +30,9 @@ class PlayerControlOverlay @JvmOverloads constructor(
     private var isTrackingTouch = false
     private var hasSelectedRenderer = false
     private var showSubtitleMenuItem = false
+    private var showSubtitle = ""
 
+    private val toolbarHeader: Toolbar
     private val seekBarPosition: SeekBar
     private lateinit var callback: Callback
     private val textViewPosition: AppCompatTextView
@@ -45,6 +49,7 @@ class PlayerControlOverlay @JvmOverloads constructor(
 
         readStyleAttributes(context, attrs)
 
+        toolbarHeader = root.findViewById(R.id.toolbar_header)
         overlayContainer = root.findViewById(R.id.overlay_container)
         seekBarPosition = root.findViewById(R.id.seekbar_position)
         textViewPosition = root.findViewById(R.id.textview_position)
@@ -61,10 +66,17 @@ class PlayerControlOverlay @JvmOverloads constructor(
         }
 
         root.setOnClickListener {
-            Log.e("OverLay","Click!")
+            Log.e("OverLay", "Click!")
             handler.removeCallbacksAndMessages(null)
             toggleToolbarVisibility()
         }
+
+    }
+
+    override fun onFinishInflate() {
+        super.onFinishInflate()
+
+        toolbarHeader.title = showSubtitle
 
     }
 
@@ -139,6 +151,9 @@ class PlayerControlOverlay @JvmOverloads constructor(
             R.styleable.PlayerControlComponent_showSubtitleMenuItem,
             true
         )
+        showSubtitle = styledAttributes.getString(
+            R.styleable.PlayerControlComponent_showSubtitle
+        ) ?: "초기화"
         styledAttributes.recycle()
     }
 
