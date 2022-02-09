@@ -31,6 +31,7 @@ class PlayerControlOverlay @JvmOverloads constructor(
     private var hasSelectedRenderer = false
     private var showSubtitleMenuItem = false
     private var showSubtitle = ""
+    private var handlerFlag = false
 
     private val toolbarHeader: Toolbar
     private val seekBarPosition: SeekBar
@@ -41,6 +42,10 @@ class PlayerControlOverlay @JvmOverloads constructor(
     private val imageButtonPlayPause: AppCompatImageButton
     private val imageButtonFullScreen: AppCompatImageButton
 
+    private val overlayHandler: Handler
+    private val hideAction: Runnable
+    private val hideAtMs: Long
+    private val showTimeoutMs: Int
 
 
     init {
@@ -48,6 +53,8 @@ class PlayerControlOverlay @JvmOverloads constructor(
             .inflate(R.layout.player_overlay, this)
 
         readStyleAttributes(context, attrs)
+
+        overlayHandler = Handler()
 
         toolbarHeader = root.findViewById(R.id.toolbar_header)
         overlayContainer = root.findViewById(R.id.overlay_container)
@@ -67,10 +74,13 @@ class PlayerControlOverlay @JvmOverloads constructor(
 
         root.setOnClickListener {
             Log.e("OverLay", "Click!")
-            handler.removeCallbacksAndMessages(null)
+            overlayHandler.removeCallbacksAndMessages(null)
             toggleToolbarVisibility()
         }
 
+        hideAction = Runnable { hide() }
+        hideAtMs = Long.MIN_VALUE + 1
+        showTimeoutMs = 5000
     }
 
     override fun onFinishInflate() {
@@ -98,10 +108,12 @@ class PlayerControlOverlay @JvmOverloads constructor(
             return
         }
         if (toolbarsAreVisible) {
+            removeToolbarHideTimer()
             hideToolbars()
             return
         }
         showToolbars()
+        startToolbarHideTimer()
     }
 
     /**
@@ -110,11 +122,31 @@ class PlayerControlOverlay @JvmOverloads constructor(
     private fun hideToolbars() {
         // Already hidden, do nothing.
         if (!toolbarsAreVisible) {
+            handlerFlag = false
             return
         }
+        handlerFlag = false
         toolbarsAreVisible = false
         ThreadUtils.onMain {
             ViewUtils.fadeOutViewAboveOrBelowParent(overlayContainer)
+        }
+    }
+
+    fun isVisible(): Boolean {
+        return visibility == VISIBLE
+    }
+
+    private fun hide() {
+        if (isVisible()) {
+            visibility = GONE
+            removeCallbacks(hideAction)
+        }
+    }
+
+    private fun hideAfterTimeout() {
+        removeCallbacks(hideAction)
+        if (showTimeoutMs > 0) {
+            postDelayed(hideAction, showTimeoutMs.toLong())
         }
     }
 
@@ -129,6 +161,21 @@ class PlayerControlOverlay @JvmOverloads constructor(
         ThreadUtils.onMain {
             toolbarsAreVisible = true
             ViewUtils.fadeInViewAboveOrBelowParent(overlayContainer)
+        }
+    }
+
+    private fun startToolbarHideTimer() {
+        if(!handlerFlag) {
+            val timerDelay = 2500L
+            handlerFlag = true
+            handler.postDelayed(this::hideToolbars, timerDelay)
+        }
+    }
+
+    private fun removeToolbarHideTimer() {
+        if(handlerFlag){
+            handlerFlag = false
+            handler.removeCallbacks(this::hideToolbars)
         }
     }
 
