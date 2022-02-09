@@ -144,15 +144,15 @@ class Player1Fragment : MediaPlayerServiceFragment(), PlayerControlOverlay.Callb
     }
 
     private val hideScreenRunnable = Runnable{
-    requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-    requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-        requireActivity().window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        requireActivity().window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE
+                // Set the content to appear under the system bars so that the
+                // content doesn't resize when the system bars hide and show.
+                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                // Hide the nav bar and status bar
                 or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_FULLSCREEN
-                or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                )
+                or View.SYSTEM_UI_FLAG_FULLSCREEN)
     }
 
     private val showScreenRunnable = Runnable {
@@ -162,10 +162,18 @@ class Player1Fragment : MediaPlayerServiceFragment(), PlayerControlOverlay.Callb
 
     private fun hideSystemUI() {
         binding.toolbar.visibility = View.GONE
-
         hideHandler.removeCallbacks(showScreenRunnable)
         hideHandler.postDelayed(hideScreenRunnable, UI_ANIMATION_DELAY.toLong())
 
+    }
+
+    private fun getStatusBarHeight():Int {
+        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
+        return if (resourceId > 0) {
+            resources.getDimensionPixelSize(resourceId)
+        } else {
+            -1
+        }
     }
 
     private fun showSystemUI() {
@@ -173,10 +181,10 @@ class Player1Fragment : MediaPlayerServiceFragment(), PlayerControlOverlay.Callb
 //                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 //                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
 
-        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         requireActivity().window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+
         hideHandler.removeCallbacks(hideScreenRunnable)
         hideHandler.postDelayed(showScreenRunnable, UI_ANIMATION_DELAY.toLong())
     }

@@ -13,9 +13,17 @@ class PlayerViewModel @Inject constructor() : ViewModel() {
     val isFullScreen: LiveData<Boolean>
         get() = _isFullScreen
 
+    private var _fullscreenFlag = false
+    val fullscreenFlag
+        get() = _fullscreenFlag
+
     fun setFullscreenState(setValue: Boolean) {
-        if(_isFullScreen.value != setValue) {
+        if (_isFullScreen.value != setValue) {
             _isFullScreen.value = setValue
         }
+    }
+
+    fun useFullscreen() {
+        _fullscreenFlag = true
     }
 }
