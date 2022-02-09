@@ -59,6 +59,7 @@ class Player1Fragment : MediaPlayerServiceFragment(), PlayerControlOverlay.Callb
     private var resumeIsPlaying = true
     private var resumeLength: Long = 0
     private var resumeTime: Long = 0
+    private var statusBarHeight = 0
 
     private val rootJob: AndroidJob = AndroidJob(lifecycle)
     private val handler = Handler()
@@ -120,6 +121,7 @@ class Player1Fragment : MediaPlayerServiceFragment(), PlayerControlOverlay.Callb
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentPlayer1Binding.inflate(inflater, container, false)
+        statusBarHeight = getStatusBarHeight()
         // Inflate the layout for this fragment
         return binding.root
     }
@@ -143,8 +145,8 @@ class Player1Fragment : MediaPlayerServiceFragment(), PlayerControlOverlay.Callb
         }
     }
 
-    private val hideScreenRunnable = Runnable{
-        requireActivity().window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE
+    private val hideScreenRunnable = Runnable {
+        binding.playerContainer.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE
                 // Set the content to appear under the system bars so that the
                 // content doesn't resize when the system bars hide and show.
                 or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -157,22 +159,22 @@ class Player1Fragment : MediaPlayerServiceFragment(), PlayerControlOverlay.Callb
 
     private val showScreenRunnable = Runnable {
         binding.toolbar.visibility = View.VISIBLE
-
+        setMargin(statusBarHeight)
     }
 
     private fun hideSystemUI() {
         binding.toolbar.visibility = View.GONE
+        setMargin(0)
         hideHandler.removeCallbacks(showScreenRunnable)
         hideHandler.postDelayed(hideScreenRunnable, UI_ANIMATION_DELAY.toLong())
-
     }
 
-    private fun getStatusBarHeight():Int {
+    private fun getStatusBarHeight(): Int {
         val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
         return if (resourceId > 0) {
             resources.getDimensionPixelSize(resourceId)
         } else {
-            -1
+            0
         }
     }
 
@@ -181,12 +183,18 @@ class Player1Fragment : MediaPlayerServiceFragment(), PlayerControlOverlay.Callb
 //                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 //                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
 
-        requireActivity().window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        binding.playerContainer.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
 
         hideHandler.removeCallbacks(hideScreenRunnable)
         hideHandler.postDelayed(showScreenRunnable, UI_ANIMATION_DELAY.toLong())
+    }
+
+    private fun setMargin(size: Int) {
+        val param: FrameLayout.LayoutParams = FrameLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT,ConstraintLayout.LayoutParams.MATCH_PARENT)
+        param.topMargin = size
+        binding.rootContainer.layoutParams = param
     }
 
 
