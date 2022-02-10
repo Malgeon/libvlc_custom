@@ -2,6 +2,7 @@ package com.example.libvlc_custom.player.widget
 
 import android.content.Context
 import android.os.Handler
+import android.os.SystemClock
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
@@ -44,9 +45,13 @@ class PlayerControlOverlay @JvmOverloads constructor(
 
     private val overlayHandler: Handler
     private val hideAction: Runnable
-    private val hideAtMs: Long
-    private val showTimeoutMs: Int
+    private var hideAtMs: Long
+    private var showTimeoutMs: Int
 
+    companion object {
+        const val TIME_UNSET = Long.MIN_VALUE + 1
+        const val DEFAULT_SHOW_TIMEOUT_MS = 5000
+    }
 
     init {
         root = LayoutInflater.from(context)
@@ -75,19 +80,17 @@ class PlayerControlOverlay @JvmOverloads constructor(
         root.setOnClickListener {
             Log.e("OverLay", "Click!")
             overlayHandler.removeCallbacksAndMessages(null)
-            toggleToolbarVisibility()
+//            toggleToolbarVisibility()
         }
 
         hideAction = Runnable { hide() }
-        hideAtMs = Long.MIN_VALUE + 1
-        showTimeoutMs = 5000
+        hideAtMs = TIME_UNSET
+        showTimeoutMs = DEFAULT_SHOW_TIMEOUT_MS
     }
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-
         toolbarHeader.title = showSubtitle
-
     }
 
     interface Callback {
@@ -108,12 +111,24 @@ class PlayerControlOverlay @JvmOverloads constructor(
             return
         }
         if (toolbarsAreVisible) {
-            removeToolbarHideTimer()
-            hideToolbars()
+//            hideToolbars(
+            hide()
             return
         }
-        showToolbars()
-        startToolbarHideTimer()
+        show()
+//        showToolbars()
+    }
+
+    private fun toggleOverlayVisibility() {
+        if (!isOverlayContainerVisible()) {
+
+        } else {
+            hide()
+        }
+    }
+
+    private fun maybeShowController() {
+
     }
 
     /**
@@ -132,21 +147,45 @@ class PlayerControlOverlay @JvmOverloads constructor(
         }
     }
 
-    fun isVisible(): Boolean {
+    private fun isVisible(): Boolean {
         return visibility == VISIBLE
     }
 
+    private fun isOverlayContainerVisible(): Boolean {
+        return overlayContainer.visibility == VISIBLE
+    }
+
     private fun hide() {
-        if (isVisible()) {
-            visibility = GONE
+        if (isOverlayContainerVisible()) {
+            overlayContainer.visibility = GONE
             removeCallbacks(hideAction)
+        }
+        hideAtMs = TIME_UNSET
+    }
+
+    private fun show() {
+        if (!isOverlayContainerVisible()) {
+            overlayContainer.visibility = VISIBLE
+        }
+        hideAfterTimeout()
+    }
+
+    private fun setShowTimeoutMs(showTimeoutMs: Int) {
+        this.showTimeoutMs = showTimeoutMs
+        if (isVisible()) {
+            hideAfterTimeout()
         }
     }
 
     private fun hideAfterTimeout() {
         removeCallbacks(hideAction)
         if (showTimeoutMs > 0) {
-            postDelayed(hideAction, showTimeoutMs.toLong())
+            hideAtMs = SystemClock.uptimeMillis() + showTimeoutMs
+            if (isAttachedToWindow) {
+                postDelayed(hideAction, showTimeoutMs.toLong())
+            }
+        } else {
+            hideAtMs = TIME_UNSET
         }
     }
 
@@ -164,8 +203,9 @@ class PlayerControlOverlay @JvmOverloads constructor(
         }
     }
 
+
     private fun startToolbarHideTimer() {
-        if(!handlerFlag) {
+        if (!handlerFlag) {
             val timerDelay = 2500L
             handlerFlag = true
             handler.postDelayed(this::hideToolbars, timerDelay)
@@ -173,7 +213,7 @@ class PlayerControlOverlay @JvmOverloads constructor(
     }
 
     private fun removeToolbarHideTimer() {
-        if(handlerFlag){
+        if (handlerFlag) {
             handlerFlag = false
             handler.removeCallbacks(this::hideToolbars)
         }
@@ -259,5 +299,4 @@ class PlayerControlOverlay @JvmOverloads constructor(
         isTrackingTouch = false
         callback.onProgressChanged(seekBar!!.progress)
     }
-
 }
