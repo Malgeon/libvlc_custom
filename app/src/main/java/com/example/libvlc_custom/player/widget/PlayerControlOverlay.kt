@@ -1,5 +1,6 @@
 package com.example.libvlc_custom.player.widget
 
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.os.Handler
 import android.os.SystemClock
@@ -33,6 +34,7 @@ class PlayerControlOverlay @JvmOverloads constructor(
     private var showSubtitleMenuItem = false
     private var showSubtitle = ""
     private var handlerFlag = false
+    private var isPlaying = false
 
     private val toolbarHeader: Toolbar
     private val seekBarPosition: SeekBar
@@ -47,10 +49,11 @@ class PlayerControlOverlay @JvmOverloads constructor(
     private val hideAction: Runnable
     private var hideAtMs: Long
     private var showTimeoutMs: Int
+    private var controllerShowTimeoutMs: Int
 
     companion object {
         const val TIME_UNSET = Long.MIN_VALUE + 1
-        const val DEFAULT_SHOW_TIMEOUT_MS = 5000
+        const val DEFAULT_SHOW_TIMEOUT_MS = 2000
     }
 
     init {
@@ -81,11 +84,13 @@ class PlayerControlOverlay @JvmOverloads constructor(
             Log.e("OverLay", "Click!")
             overlayHandler.removeCallbacksAndMessages(null)
 //            toggleToolbarVisibility()
+            toggleOverlayVisibility()
         }
 
         hideAction = Runnable { hide() }
         hideAtMs = TIME_UNSET
         showTimeoutMs = DEFAULT_SHOW_TIMEOUT_MS
+        controllerShowTimeoutMs = DEFAULT_SHOW_TIMEOUT_MS
     }
 
     override fun onFinishInflate() {
@@ -121,14 +126,27 @@ class PlayerControlOverlay @JvmOverloads constructor(
 
     private fun toggleOverlayVisibility() {
         if (!isOverlayContainerVisible()) {
-
+            maybeShowController(true)
         } else {
             hide()
         }
     }
 
-    private fun maybeShowController() {
+    private fun maybeShowController(isForced: Boolean) {
+        val wasShowingIndefinitely = isOverlayContainerVisible() && showTimeoutMs <= 0
+        val shouldShowIndefinitely = shouldShowControllerIndefinitely()
+        if (isForced || wasShowingIndefinitely || shouldShowIndefinitely) {
+            showController(shouldShowIndefinitely)
+        }
+    }
 
+    private fun showController(showIndefinitely: Boolean) {
+        setShowTimeoutMs(if (showIndefinitely) 0 else controllerShowTimeoutMs)
+        show()
+    }
+
+    private fun shouldShowControllerIndefinitely(): Boolean {
+        return !isPlaying
     }
 
     /**
@@ -158,13 +176,18 @@ class PlayerControlOverlay @JvmOverloads constructor(
     private fun hide() {
         if (isOverlayContainerVisible()) {
             overlayContainer.visibility = GONE
+//            ViewUtils.fadeOutViewAboveOrBelowParent(overlayContainer)
             removeCallbacks(hideAction)
         }
         hideAtMs = TIME_UNSET
     }
 
     private fun show() {
+        Log.e("show method", "on it")
         if (!isOverlayContainerVisible()) {
+//            ThreadUtils.onMain {
+//                ViewUtils.fadeInViewAboveOrBelowParent(overlayContainer)
+//            }
             overlayContainer.visibility = VISIBLE
         }
         hideAfterTimeout()
@@ -248,11 +271,14 @@ class PlayerControlOverlay @JvmOverloads constructor(
         return if (isPlaying) R.drawable.ic_pause_white_36dp else R.drawable.ic_play_arrow_white_36dp
     }
 
+
     fun configure(
         isPlaying: Boolean,
         time: Long,
         length: Long
     ) {
+        this.isPlaying = isPlaying
+        maybeShowController(false)
         val lengthText: String = TimeUtils.getTimeString(length)
         val positionText: String = TimeUtils.getTimeString(time)
         val progress = (time.toFloat() / length * 100).toInt()

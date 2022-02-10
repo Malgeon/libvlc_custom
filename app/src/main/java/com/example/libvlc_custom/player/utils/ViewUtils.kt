@@ -17,7 +17,7 @@ object ViewUtils {
         view: View,
     ) {
         val fadeOut = ObjectAnimator.ofFloat(view, "alpha", 1f, 0f)
-        fadeOut.duration = 500
+        fadeOut.duration = 1000
         fadeOut.start()
     }
 }
