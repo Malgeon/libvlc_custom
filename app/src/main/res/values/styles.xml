@@ -27,7 +27,7 @@
     </style>
 
     <style name="AppTheme.PlayerSeekBar" parent="@style/Widget.AppCompat.SeekBar">
-        <item name="colorAccent">@color/player_seekbar</item>
+        <item name="colorAccent">#FF0000</item>
     </style>
 
     <style name="ExoMediaButton">

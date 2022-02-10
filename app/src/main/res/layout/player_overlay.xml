@@ -48,13 +48,14 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:theme="@style/AppTheme.PlayerSeekBar"
+                android:layout_marginBottom="4dp"
                 app:layout_constraintBottom_toBottomOf="parent" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/textview_position"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="16dp"
                 android:layout_marginStart="8dp"
                 android:textSize="12sp"
                 android:textColor="@color/player_toolbar_text_length"
@@ -64,10 +65,10 @@
                 tools:ignore="RtlHardcoded" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/position_length_quoter"
+                android:id="@+id/position_divide"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="16dp"
                 android:paddingStart="2dp"
                 android:paddingEnd="2dp"
                 android:text="/"
@@ -81,12 +82,38 @@
                 android:id="@+id/textview_length"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="16dp"
                 android:textSize="12sp"
                 android:textColor="@color/player_toolbar_text_length"
                 tools:text="0:00"
                 app:layout_constraintBottom_toTopOf="@+id/seekbar_position"
-                app:layout_constraintStart_toEndOf="@id/position_length_quoter"
+                app:layout_constraintStart_toEndOf="@id/position_divide"
+                tools:ignore="RtlHardcoded" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imageview_realtime"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="20dp"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_circle_red_24"
+                app:layout_constraintBottom_toTopOf="@+id/seekbar_position"
+                app:layout_constraintStart_toEndOf="@id/textview_length"
+                tools:ignore="RtlHardcoded" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textview_realtime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginStart="4dp"
+                android:textSize="12sp"
+                android:textColor="@color/player_toolbar_text_length"
+                android:text="실시간"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@+id/seekbar_position"
+                app:layout_constraintStart_toEndOf="@id/imageview_realtime"
                 tools:ignore="RtlHardcoded" />
 
             <androidx.appcompat.widget.AppCompatImageButton
@@ -96,7 +123,7 @@
                 android:layout_centerHorizontal="true"
                 android:background="@android:color/transparent"
                 android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="16dp"
                 app:layout_constraintBottom_toTopOf="@id/seekbar_position"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:srcCompat="@drawable/ic_fullscreen_24"

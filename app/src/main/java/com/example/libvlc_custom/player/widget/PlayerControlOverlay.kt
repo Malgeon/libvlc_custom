@@ -12,6 +12,7 @@ import android.widget.FrameLayout
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.appcompat.widget.AppCompatImageButton
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -35,6 +36,7 @@ class PlayerControlOverlay @JvmOverloads constructor(
     private var showSubtitle = ""
     private var handlerFlag = false
     private var isPlaying = false
+    private var isRealTime = false
 
     private val toolbarHeader: Toolbar
     private val seekBarPosition: SeekBar
@@ -44,6 +46,9 @@ class PlayerControlOverlay @JvmOverloads constructor(
     private val textViewLength: AppCompatTextView
     private val imageButtonPlayPause: AppCompatImageButton
     private val imageButtonFullScreen: AppCompatImageButton
+    private val textViewDivide: AppCompatTextView
+    private val imageRealtime: AppCompatImageView
+    private val textRealtime: AppCompatTextView
 
     private val overlayHandler: Handler
     private val hideAction: Runnable
@@ -71,6 +76,9 @@ class PlayerControlOverlay @JvmOverloads constructor(
         textViewLength = root.findViewById(R.id.textview_length)
         imageButtonPlayPause = root.findViewById(R.id.imagebutton_play_pause)
         imageButtonFullScreen = root.findViewById(R.id.imagebutton_fullscreen)
+        textViewDivide = root.findViewById(R.id.position_divide)
+        imageRealtime = root.findViewById(R.id.imageview_realtime)
+        textRealtime = root.findViewById(R.id.textview_realtime)
 
         seekBarPosition.setOnSeekBarChangeListener(this)
         imageButtonPlayPause.setOnClickListener {
@@ -277,6 +285,7 @@ class PlayerControlOverlay @JvmOverloads constructor(
         time: Long,
         length: Long
     ) {
+        Log.e("time, length", "$time, $length")
         this.isPlaying = isPlaying
         maybeShowController(false)
         val lengthText: String = TimeUtils.getTimeString(length)
@@ -286,17 +295,42 @@ class PlayerControlOverlay @JvmOverloads constructor(
             imageButtonPlayPause.setImageResource(
                 getPlayPauseDrawableResourceId(isPlaying)
             )
-            if (time < 0 || length < 0) {
-                seekBarPosition.progress = 0
-                textViewPosition.text = null
-                textViewLength.text = null
+            if (time <= 0 || length <= 0) {
+                setRealTime(true)
                 return@onMain
+            } else {
+                setRealTime(false)
             }
             seekBarPosition.progress = progress
             textViewPosition.text = positionText
             textViewLength.text = lengthText
         }
     }
+
+    private fun setRealTime(isRealTime: Boolean) {
+        if (isRealTime xor this.isRealTime) {
+            if(isRealTime) {
+                seekBarPosition.visibility = GONE
+                textViewPosition.visibility = GONE
+                textViewDivide.visibility = GONE
+                textViewLength.visibility = GONE
+                imageRealtime.visibility = VISIBLE
+                textRealtime.visibility = VISIBLE
+            } else {
+                seekBarPosition.visibility = VISIBLE
+                textViewPosition.visibility = VISIBLE
+                textViewDivide.visibility = VISIBLE
+                textViewLength.visibility = VISIBLE
+                imageRealtime.visibility = GONE
+                textRealtime.visibility = GONE
+            }
+            this.isRealTime = isRealTime
+        } else {
+            return
+        }
+    }
+
+
 
     fun setFullscreen(isFullscreen: Boolean) {
         imageButtonFullScreen.setImageResource(
