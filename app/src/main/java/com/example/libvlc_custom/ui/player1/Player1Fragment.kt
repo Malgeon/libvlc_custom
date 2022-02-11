@@ -406,8 +406,6 @@ class Player1Fragment : MediaPlayerServiceFragment(), PlayerControlOverlay.Callb
     }
 
     override fun onBuffering(buffering: Float) {
-        Log.e("Fragment", "onBuffering $buffering")
-
         if (buffering < 99) {
             binding.componentPlayerControl.setBuffering(true)
         } else {
