@@ -10,13 +10,9 @@ import org.videolan.libvlc.interfaces.IVLCVout
 interface VlcPlayer : MediaPlayer {
 
     val vOut: IVLCVout
-
     val selectedRendererItem: RendererItem?
-
     val selectedSubtitleUri: Uri?
-
     val currentVideoTrack: IMedia.VideoTrack?
-
     val media: IMedia?
 
     fun attachSurfaces(
@@ -26,12 +22,8 @@ interface VlcPlayer : MediaPlayer {
     )
 
     fun detachSurfaces()
-
     fun setRendererItem(rendererItem: RendererItem?)
-
     fun setVolume(volume: Int)
-
     fun setAspectRatio(aspectRatio: String?)
-
     fun setScale(scale: Float)
 }

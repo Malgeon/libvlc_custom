@@ -110,7 +110,6 @@ class Player1Fragment : MediaPlayerServiceFragment(), PlayerControlOverlay.Callb
         holder.setFormat(PixelFormat.TRANSLUCENT)
     }
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

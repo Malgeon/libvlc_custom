@@ -5,10 +5,8 @@ import org.videolan.libvlc.RendererDiscoverer
 import org.videolan.libvlc.RendererItem
 import java.util.ArrayList
 import java.util.Observable
-
 import org.videolan.libvlc.RendererDiscoverer.Event.ItemAdded
 import org.videolan.libvlc.RendererDiscoverer.Event.ItemDeleted
-
 
 class RendererItemObservable(private val libVlc: LibVLC) : Observable(),
     RendererDiscoverer.EventListener {
