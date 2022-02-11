@@ -402,7 +402,6 @@ class Player1Fragment : MediaPlayerServiceFragment(), PlayerControlOverlay.Callb
     }
 
     override fun onBuffering(buffering: Float) {
-
         Log.e("Fragment", "onBuffering")
 //        if (buffering == 100f) {
 //            launch(UI, parent = rootJob) { progressBar.visibility = View.GONE }
@@ -423,7 +422,6 @@ class Player1Fragment : MediaPlayerServiceFragment(), PlayerControlOverlay.Callb
     override fun onSubtitlesCleared() = startPlayback()
 
     private fun initProgressBar() {
-        Log.e("Fragment", "initProgressBar")
         val context = requireContext()
 
         progressBar = ProgressBar(
@@ -445,8 +443,6 @@ class Player1Fragment : MediaPlayerServiceFragment(), PlayerControlOverlay.Callb
     }
 
     private fun changeMediaPlayerLayout(displayW: Int, displayH: Int) {
-
-        Log.e("Fragment", "changeMediaPlayerLayout")
         /* Change the video placement using the MediaPlayer API */
         when (sizePolicy) {
             SizePolicy.SURFACE_BEST_FIT -> {
@@ -505,7 +501,6 @@ class Player1Fragment : MediaPlayerServiceFragment(), PlayerControlOverlay.Callb
     }
 
     private fun updateVideoSurfaces() {
-        Log.e("Fragment", "updateVideoSurfaces")
         if (activity == null || serviceBinder == null) {
             return
         }
@@ -629,8 +624,6 @@ class Player1Fragment : MediaPlayerServiceFragment(), PlayerControlOverlay.Callb
         sarNum: Int,
         sarDen: Int
     ) {
-
-        Log.e("Fragment", "onNewVideoLayout")
         mVideoWidth = width
         mVideoHeight = height
         mVideoVisibleWidth = visibleWidth
@@ -639,6 +632,4 @@ class Player1Fragment : MediaPlayerServiceFragment(), PlayerControlOverlay.Callb
         mVideoSarDen = sarDen
         updateVideoSurfaces()
     }
-
-
 }

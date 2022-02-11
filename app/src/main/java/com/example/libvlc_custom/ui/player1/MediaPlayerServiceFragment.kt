@@ -17,25 +17,19 @@ import com.example.libvlc_custom.player.services.MediaPlayerServiceBinder
 
 abstract class MediaPlayerServiceFragment : Fragment() {
 
-    protected var isFullScreen = false
-
     protected var serviceBinder: MediaPlayerServiceBinder? = null
     private var mediaController: MediaControllerCompat? = null
     protected lateinit var mContext: Context
 
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceDisconnected(p0: ComponentName?) {
-            Log.e("MediaService", "onServiceDisconnected")
-
             serviceBinder = null
         }
 
         override fun onServiceConnected(componentName: ComponentName?, binder: IBinder?) {
             serviceBinder = binder as? MediaPlayerServiceBinder
-            Log.e("MediaService", "onServiceConnected")
             onServiceConnected()
             registerMediaController(serviceBinder)
-
         }
     }
 
@@ -52,16 +46,12 @@ abstract class MediaPlayerServiceFragment : Fragment() {
         }
     }
 
-
     protected abstract fun onServiceConnected()
     protected abstract fun openFullscreen()
     protected abstract fun closeFullscreen()
     protected abstract fun configure(state: PlaybackStateCompat)
 
-
     private fun bindMediaPlayerService(): Boolean {
-        Log.e("MediaService", "bindMediaPlayerService")
-
         return requireActivity().bindService(
             Intent(mContext.applicationContext, MediaPlayerService::class.java),
             serviceConnection,
@@ -102,8 +92,6 @@ abstract class MediaPlayerServiceFragment : Fragment() {
 
     override fun onStop() {
         activity?.unbindService(serviceConnection)
-
         super.onStop()
     }
-
 }
