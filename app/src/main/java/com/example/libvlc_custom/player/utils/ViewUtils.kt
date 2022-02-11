@@ -4,13 +4,18 @@ import android.animation.ObjectAnimator
 import android.view.View
 
 object ViewUtils {
-
     fun fadeInViewAboveOrBelowParent(
         view: View
     ) {
         val fadeIn = ObjectAnimator.ofFloat(view, "alpha", 0f, 1f)
         fadeIn.duration = 500
         fadeIn.start()
+    }
+
+    fun fadeInView(
+        view: View
+    ) {
+        view.animate().alpha(1F).setDuration(500).start()
     }
 
     fun fadeOutViewAboveOrBelowParent(

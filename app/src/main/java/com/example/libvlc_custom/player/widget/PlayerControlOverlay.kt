@@ -1,6 +1,5 @@
 package com.example.libvlc_custom.player.widget
 
-import android.animation.ObjectAnimator
 import android.content.Context
 import android.os.Handler
 import android.os.SystemClock
@@ -19,7 +18,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.libvlc_custom.R
 import com.example.libvlc_custom.player.utils.ThreadUtils
 import com.example.libvlc_custom.player.utils.TimeUtils
-import com.example.libvlc_custom.player.utils.ViewUtils
 
 class PlayerControlOverlay @JvmOverloads constructor(
     context: Context,
@@ -29,12 +27,10 @@ class PlayerControlOverlay @JvmOverloads constructor(
 ) : FrameLayout(context, attrs, defStyleAttr), OnSeekBarChangeListener {
 
     private val root: View
-    private var toolbarsAreVisible = true
     private var isTrackingTouch = false
     private var hasSelectedRenderer = false
     private var showSubtitleMenuItem = false
     private var showSubtitle = ""
-    private var handlerFlag = false
     private var isPlaying = false
     private var isRealTime = false
 
@@ -50,7 +46,6 @@ class PlayerControlOverlay @JvmOverloads constructor(
     private val imageRealtime: AppCompatImageView
     private val textRealtime: AppCompatTextView
 
-    private val overlayHandler: Handler
     private val hideAction: Runnable
     private var hideAtMs: Long
     private var showTimeoutMs: Int
@@ -66,8 +61,6 @@ class PlayerControlOverlay @JvmOverloads constructor(
             .inflate(R.layout.player_overlay, this)
 
         readStyleAttributes(context, attrs)
-
-        overlayHandler = Handler()
 
         toolbarHeader = root.findViewById(R.id.toolbar_header)
         overlayContainer = root.findViewById(R.id.overlay_container)
@@ -89,9 +82,7 @@ class PlayerControlOverlay @JvmOverloads constructor(
         }
 
         root.setOnClickListener {
-            Log.e("OverLay", "Click!")
-            overlayHandler.removeCallbacksAndMessages(null)
-//            toggleToolbarVisibility()
+            handler.removeCallbacksAndMessages(null)
             toggleOverlayVisibility()
         }
 
@@ -104,32 +95,6 @@ class PlayerControlOverlay @JvmOverloads constructor(
     override fun onFinishInflate() {
         super.onFinishInflate()
         toolbarHeader.title = showSubtitle
-    }
-
-    interface Callback {
-        fun onPlayPauseButtonClicked()
-        fun onFullScreenButtonClicked()
-        fun onCastButtonClicked()
-        fun onProgressChanged(progress: Int)
-        fun onProgressChangeStarted()
-        fun onSubtitlesButtonClicked()
-    }
-
-    /**
-     * Toggle the visibility of the toolbars by slide animating them.
-     */
-    private fun toggleToolbarVisibility() {
-        // User is sliding seek bar, do not modify visibility.
-        if (isTrackingTouch) {
-            return
-        }
-        if (toolbarsAreVisible) {
-//            hideToolbars(
-            hide()
-            return
-        }
-        show()
-//        showToolbars()
     }
 
     private fun toggleOverlayVisibility() {
@@ -157,53 +122,30 @@ class PlayerControlOverlay @JvmOverloads constructor(
         return !isPlaying
     }
 
-    /**
-     * Hide header and footer toolbars by translating them off the screen vertically.
-     */
-    private fun hideToolbars() {
-        // Already hidden, do nothing.
-        if (!toolbarsAreVisible) {
-            handlerFlag = false
-            return
-        }
-        handlerFlag = false
-        toolbarsAreVisible = false
-        ThreadUtils.onMain {
-            ViewUtils.fadeOutViewAboveOrBelowParent(overlayContainer)
-        }
-    }
-
-    private fun isVisible(): Boolean {
-        return visibility == VISIBLE
-    }
-
     private fun isOverlayContainerVisible(): Boolean {
         return overlayContainer.visibility == VISIBLE
     }
 
     private fun hide() {
         if (isOverlayContainerVisible()) {
+            overlayContainer.animate().alpha(0F).setDuration(500).start()
             overlayContainer.visibility = GONE
-//            ViewUtils.fadeOutViewAboveOrBelowParent(overlayContainer)
             removeCallbacks(hideAction)
         }
         hideAtMs = TIME_UNSET
     }
 
     private fun show() {
-        Log.e("show method", "on it")
         if (!isOverlayContainerVisible()) {
-//            ThreadUtils.onMain {
-//                ViewUtils.fadeInViewAboveOrBelowParent(overlayContainer)
-//            }
             overlayContainer.visibility = VISIBLE
+            overlayContainer.animate().alpha(1F).setDuration(500).start()
         }
         hideAfterTimeout()
     }
 
     private fun setShowTimeoutMs(showTimeoutMs: Int) {
         this.showTimeoutMs = showTimeoutMs
-        if (isVisible()) {
+        if (isOverlayContainerVisible()) {
             hideAfterTimeout()
         }
     }
@@ -219,37 +161,6 @@ class PlayerControlOverlay @JvmOverloads constructor(
             hideAtMs = TIME_UNSET
         }
     }
-
-    /**
-     * Show header and footer toolbars by translating them vertically.
-     */
-    private fun showToolbars() {
-        // Already shown, do nothing.
-        if (toolbarsAreVisible) {
-            return
-        }
-        ThreadUtils.onMain {
-            toolbarsAreVisible = true
-            ViewUtils.fadeInViewAboveOrBelowParent(overlayContainer)
-        }
-    }
-
-
-    private fun startToolbarHideTimer() {
-        if (!handlerFlag) {
-            val timerDelay = 2500L
-            handlerFlag = true
-            handler.postDelayed(this::hideToolbars, timerDelay)
-        }
-    }
-
-    private fun removeToolbarHideTimer() {
-        if (handlerFlag) {
-            handlerFlag = false
-            handler.removeCallbacks(this::hideToolbars)
-        }
-    }
-
 
     private fun readStyleAttributes(context: Context, attrs: AttributeSet?) {
         if (attrs == null) {
@@ -279,13 +190,11 @@ class PlayerControlOverlay @JvmOverloads constructor(
         return if (isPlaying) R.drawable.ic_pause_white_36dp else R.drawable.ic_play_arrow_white_36dp
     }
 
-
     fun configure(
         isPlaying: Boolean,
         time: Long,
         length: Long
     ) {
-        Log.e("time, length", "$time, $length")
         this.isPlaying = isPlaying
         maybeShowController(false)
         val lengthText: String = TimeUtils.getTimeString(length)
@@ -330,8 +239,6 @@ class PlayerControlOverlay @JvmOverloads constructor(
         }
     }
 
-
-
     fun setFullscreen(isFullscreen: Boolean) {
         imageButtonFullScreen.setImageResource(
             getFullscreenDrawableResourceId(isFullscreen)
@@ -347,7 +254,7 @@ class PlayerControlOverlay @JvmOverloads constructor(
     }
 
     override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-        Log.e("Progress", "change")
+        Log.i("onProgressChanged", "change")
     }
 
     override fun onStartTrackingTouch(seekBar: SeekBar?) {
@@ -358,5 +265,14 @@ class PlayerControlOverlay @JvmOverloads constructor(
     override fun onStopTrackingTouch(seekBar: SeekBar?) {
         isTrackingTouch = false
         callback.onProgressChanged(seekBar!!.progress)
+    }
+
+    interface Callback {
+        fun onPlayPauseButtonClicked()
+        fun onFullScreenButtonClicked()
+        fun onCastButtonClicked()
+        fun onProgressChanged(progress: Int)
+        fun onProgressChangeStarted()
+        fun onSubtitlesButtonClicked()
     }
 }
