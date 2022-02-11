@@ -22,6 +22,7 @@ import android.widget.FrameLayout
 import android.widget.ProgressBar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.example.libvlc_custom.R
 import com.example.libvlc_custom.databinding.FragmentPlayer1Binding
 import com.example.libvlc_custom.player.MediaPlayer
@@ -30,6 +31,8 @@ import com.example.libvlc_custom.player.utils.ResourceUtil
 import com.example.libvlc_custom.player.utils.SizePolicy
 import com.example.libvlc_custom.player.widget.PlayerControlOverlay
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.videolan.libvlc.interfaces.IMedia
 import org.videolan.libvlc.interfaces.IVLCVout
 
@@ -64,7 +67,6 @@ class Player1Fragment : MediaPlayerServiceFragment(), PlayerControlOverlay.Callb
     private val handler = Handler()
     private val hideHandler = Handler()
 
-    private lateinit var progressBar: ProgressBar
     private val playerViewModel: PlayerViewModel by viewModels()
 
     private val surfaceLayoutListener = object : View.OnLayoutChangeListener {
@@ -121,7 +123,6 @@ class Player1Fragment : MediaPlayerServiceFragment(), PlayerControlOverlay.Callb
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initProgressBar()
         subscribeToViewComponents()
         configureSubtitleSurface()
         playerViewModel.isFullScreen.observe(viewLifecycleOwner) {
@@ -181,7 +182,10 @@ class Player1Fragment : MediaPlayerServiceFragment(), PlayerControlOverlay.Callb
     }
 
     private fun setMargin(size: Int) {
-        val param: FrameLayout.LayoutParams = FrameLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT,ConstraintLayout.LayoutParams.MATCH_PARENT)
+        val param: FrameLayout.LayoutParams = FrameLayout.LayoutParams(
+            ConstraintLayout.LayoutParams.MATCH_PARENT,
+            ConstraintLayout.LayoutParams.MATCH_PARENT
+        )
         param.topMargin = size
         binding.rootContainer.layoutParams = param
     }
@@ -402,17 +406,13 @@ class Player1Fragment : MediaPlayerServiceFragment(), PlayerControlOverlay.Callb
     }
 
     override fun onBuffering(buffering: Float) {
-        Log.e("Fragment", "onBuffering")
-//        if (buffering == 100f) {
-//            launch(UI, parent = rootJob) { progressBar.visibility = View.GONE }
-//            return
-//        }
-//
-//        if (progressBar.visibility == View.VISIBLE) {
-//            return
-//        }
-//
-//        launch(UI, parent = rootJob) { progressBar.visibility = View.VISIBLE }
+        Log.e("Fragment", "onBuffering $buffering")
+
+        if (buffering < 99) {
+            binding.componentPlayerControl.setBuffering(true)
+        } else {
+            binding.componentPlayerControl.setBuffering(false)
+        }
     }
 
     override fun onPlayerPositionChanged(positionChanged: Float) {
@@ -420,27 +420,6 @@ class Player1Fragment : MediaPlayerServiceFragment(), PlayerControlOverlay.Callb
     }
 
     override fun onSubtitlesCleared() = startPlayback()
-
-    private fun initProgressBar() {
-        val context = requireContext()
-
-        progressBar = ProgressBar(
-            context, null, android.R.attr.progressBarStyleLarge
-        ).apply {
-            visibility = View.GONE
-        }
-
-        val params = FrameLayout.LayoutParams(
-            ResourceUtil.getDimenDp(context, R.dimen.player_spinner_width),
-            ResourceUtil.getDimenDp(context, R.dimen.player_spinner_height)
-        ).apply {
-            gravity = Gravity.CENTER
-        }
-
-        (view as ViewGroup).addView(
-            progressBar, params
-        )
-    }
 
     private fun changeMediaPlayerLayout(displayW: Int, displayH: Int) {
         /* Change the video placement using the MediaPlayer API */

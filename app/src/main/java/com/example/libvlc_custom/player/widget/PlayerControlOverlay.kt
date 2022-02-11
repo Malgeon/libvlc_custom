@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.ProgressBar
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.appcompat.widget.AppCompatImageButton
@@ -45,6 +46,7 @@ class PlayerControlOverlay @JvmOverloads constructor(
     private val textViewDivide: AppCompatTextView
     private val imageRealtime: AppCompatImageView
     private val textRealtime: AppCompatTextView
+    private val progressBar: ProgressBar
 
     private val hideAction: Runnable
     private var hideAtMs: Long
@@ -72,6 +74,7 @@ class PlayerControlOverlay @JvmOverloads constructor(
         textViewDivide = root.findViewById(R.id.position_divide)
         imageRealtime = root.findViewById(R.id.imageview_realtime)
         textRealtime = root.findViewById(R.id.textview_realtime)
+        progressBar = root.findViewById(R.id.loading)
 
         seekBarPosition.setOnSeekBarChangeListener(this)
         imageButtonPlayPause.setOnClickListener {
@@ -251,6 +254,14 @@ class PlayerControlOverlay @JvmOverloads constructor(
 
     fun registerCallback(callback: Callback) {
         this.callback = callback
+    }
+
+    fun setBuffering(isBuffering: Boolean) {
+        if(isBuffering) {
+            progressBar.visibility = VISIBLE
+        } else {
+            progressBar.visibility = GONE
+        }
     }
 
     override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
