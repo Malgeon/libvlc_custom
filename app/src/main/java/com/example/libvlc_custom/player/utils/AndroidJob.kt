@@ -5,7 +5,6 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import kotlinx.coroutines.Job
 
-
 /**
  * A Kotlin coroutine [@see Job] that cancels itself when the lifecycle it's
  * bound to is destroyed. This class can be used as a parent job to prevent

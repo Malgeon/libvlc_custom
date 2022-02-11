@@ -2,20 +2,17 @@ package com.example.libvlc_custom.player
 
 import android.content.Context
 import android.media.AudioManager
-import android.os.Build
 import android.util.Log
 import org.videolan.libvlc.util.AndroidUtil
 import org.videolan.libvlc.util.VLCUtil
 import java.io.File
 import java.util.ArrayList
 
-
-class VlcOptionsProvider  {
+class VlcOptionsProvider {
 
     class Builder constructor(context: Context) {
 
         private var AudioTrackSessionId = 0
-
         private val keyStoreFile: File = File(
             context.getDir("keystore", Context.MODE_PRIVATE),
             "file"
@@ -227,5 +224,4 @@ class VlcOptionsProvider  {
             }
         }
     }
-
 }

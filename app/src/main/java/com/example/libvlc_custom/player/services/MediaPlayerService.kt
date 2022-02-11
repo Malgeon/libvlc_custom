@@ -53,7 +53,8 @@ class MediaPlayerService : Service(), MediaPlayer.Callback, Dialog.Callbacks {
     private var binder: MediaPlayerServiceBinder? = null
 
     private var audioManager: AudioManager? = null
-    private var audioFocusChangeListener: WeakReference<AudioManager.OnAudioFocusChangeListener>? = null
+    private var audioFocusChangeListener: WeakReference<AudioManager.OnAudioFocusChangeListener>? =
+        null
     private var notificationManager: NotificationManager? = null
     private var stateBuilder: PlaybackStateCompat.Builder? = null
     private var mediaBitmap: Bitmap? = null
@@ -96,9 +97,10 @@ class MediaPlayerService : Service(), MediaPlayer.Callback, Dialog.Callbacks {
         Dialog.setCallbacks(libVlc, this)
         defaultBitmap = BitmapUtils.drawableToBitmap(
             ResourceUtils.getDrawable(
-            applicationContext,
-            R.drawable.ic_stream_cover
-        ))
+                applicationContext,
+                R.drawable.ic_stream_cover
+            )
+        )
 
         binder = MediaPlayerServiceBinder(this)
         notificationManager = NotificationUtils.getNotificationManager(applicationContext)
@@ -116,11 +118,11 @@ class MediaPlayerService : Service(), MediaPlayer.Callback, Dialog.Callbacks {
             rendererItemObservable?.start()
         }
 
-        Log.e("MediaPlayerService","onCreate")
+        Log.e("MediaPlayerService", "onCreate")
     }
 
     override fun onDestroy() {
-        Log.e("MediaPlayerService","onDestroy")
+        Log.e("MediaPlayerService", "onDestroy")
         stopForeground(true)
         Dialog.setCallbacks(libVlc, null)
         player?.release()
@@ -136,9 +138,7 @@ class MediaPlayerService : Service(), MediaPlayer.Callback, Dialog.Callbacks {
     }
 
     override fun onStartCommand(
-        intent: Intent?
-        , flags: Int
-        , startId: Int
+        intent: Intent?, flags: Int, startId: Int
     ): Int {
         // Pass notification button intents to the media session callback.
         MediaButtonReceiver.handleIntent(mediaSession, intent)
@@ -287,7 +287,8 @@ class MediaPlayerService : Service(), MediaPlayer.Callback, Dialog.Callbacks {
             "Pause",
             MediaButtonReceiver.buildMediaButtonPendingIntent(
                 context,
-                PlaybackStateCompat.ACTION_PAUSE)
+                PlaybackStateCompat.ACTION_PAUSE
+            )
         )
     }
 
@@ -297,7 +298,8 @@ class MediaPlayerService : Service(), MediaPlayer.Callback, Dialog.Callbacks {
             "Play",
             MediaButtonReceiver.buildMediaButtonPendingIntent(
                 context,
-                PlaybackStateCompat.ACTION_PLAY)
+                PlaybackStateCompat.ACTION_PLAY
+            )
         )
     }
 
@@ -307,7 +309,8 @@ class MediaPlayerService : Service(), MediaPlayer.Callback, Dialog.Callbacks {
             "Stop",
             MediaButtonReceiver.buildMediaButtonPendingIntent(
                 context,
-                PlaybackStateCompat.ACTION_STOP)
+                PlaybackStateCompat.ACTION_STOP
+            )
         )
     }
 
@@ -343,9 +346,10 @@ class MediaPlayerService : Service(), MediaPlayer.Callback, Dialog.Callbacks {
 
         builder.addAction(getStopAction(context))
 
-        builder.setStyle(androidx.media.app.NotificationCompat.MediaStyle()
-            .setMediaSession(mediaSession!!.sessionToken)
-            .setShowActionsInCompactView(0, 1)
+        builder.setStyle(
+            androidx.media.app.NotificationCompat.MediaStyle()
+                .setMediaSession(mediaSession!!.sessionToken)
+                .setShowActionsInCompactView(0, 1)
         )
         return builder.build()
     }
@@ -439,7 +443,7 @@ class MediaPlayerService : Service(), MediaPlayer.Callback, Dialog.Callbacks {
     }
 
     override fun onDisplay(errorMessage: Dialog.ErrorMessage?) {
-        Log.e("MediaPlayerService","onDisplay")
+        Log.e("MediaPlayerService", "onDisplay")
     }
 
     override fun onDisplay(loginDialog: Dialog.LoginDialog?) {
@@ -528,7 +532,7 @@ class MediaPlayerService : Service(), MediaPlayer.Callback, Dialog.Callbacks {
             return
         }
         setMediaBitmap(mediaUri)
-        Log.e("MediaPlayerService","setMedia")
+        Log.e("MediaPlayerService", "setMedia")
         player?.setMedia(mediaUri)
     }
 
@@ -582,16 +586,11 @@ class MediaPlayerService : Service(), MediaPlayer.Callback, Dialog.Callbacks {
 
     companion object {
         private const val Tag = "MediaPlayerService"
-
         const val RendererClearedAction = "action.rendererclearedaction"
         const val RendererSelectionAction = "action.rendererselectionaction"
-
         private const val MediaPlayerServiceChannelName = "Media Player Service"
         private const val MediaPlayerServiceChannelId = "channel.mediaplayerservice"
         private const val SimpleVlcSessionTag = "tag.libvlcsession"
         private const val MediaPlayerServiceNotificationId = 1
-
-
-
     }
 }
