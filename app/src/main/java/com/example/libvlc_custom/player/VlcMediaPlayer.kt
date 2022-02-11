@@ -13,7 +13,7 @@ import org.videolan.libvlc.interfaces.IVLCVout
 
 class VlcMediaPlayer constructor(
     private val libVlc: LibVLC
-) : VlcPlayer, MediaPlayer.EventListener, IVLCVout.Callback  {
+) : VlcPlayer, MediaPlayer.EventListener, IVLCVout.Callback {
 
 
     private var player: MediaPlayer = MediaPlayer(libVlc).apply {
@@ -21,9 +21,7 @@ class VlcMediaPlayer constructor(
     }
 
     override var callback: Callback? = null
-
     override var selectedRendererItem: RendererItem? = null
-
     override var selectedSubtitleUri: Uri? = null
 
     override val media: IMedia?
@@ -105,7 +103,6 @@ class VlcMediaPlayer constructor(
             if (hasSlaves()) {
                 callback?.onSubtitlesCleared()
             }
-
             return
         }
 
@@ -131,6 +128,4 @@ class VlcMediaPlayer constructor(
         selectedRendererItem = rendererItem
         player.setRenderer(rendererItem)
     }
-
-
 }

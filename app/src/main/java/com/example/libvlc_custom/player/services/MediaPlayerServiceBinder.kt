@@ -7,7 +7,6 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.view.SurfaceView
 import com.example.libvlc_custom.player.MediaPlayer
 import com.example.libvlc_custom.player.observables.RendererItemObservable
-import org.videolan.libvlc.Media
 import org.videolan.libvlc.RendererItem
 import org.videolan.libvlc.interfaces.IMedia
 import org.videolan.libvlc.interfaces.IVLCVout
@@ -17,7 +16,8 @@ class MediaPlayerServiceBinder constructor(
     mediaPlayerService: MediaPlayerService
 ) : Binder() {
 
-    private var serviceWeakReference: WeakReference<MediaPlayerService> = WeakReference(mediaPlayerService)
+    private var serviceWeakReference: WeakReference<MediaPlayerService> =
+        WeakReference(mediaPlayerService)
 
     val rendererItemObservable: RendererItemObservable?
         get() = serviceWeakReference
@@ -110,15 +110,13 @@ class MediaPlayerServiceBinder constructor(
             ?.currentVideoTrack
 
     fun attachSurfaces(
-        surfaceMedia: SurfaceView
-        , subtitleSurface: SurfaceView
-        , listener: IVLCVout.OnNewVideoLayoutListener
+        surfaceMedia: SurfaceView,
+        subtitleSurface: SurfaceView,
+        listener: IVLCVout.OnNewVideoLayoutListener
     ) = serviceWeakReference
         .get()
         ?.attachSurfaces(
-            surfaceMedia
-            , subtitleSurface
-            , listener
+            surfaceMedia, subtitleSurface, listener
         )
 
     fun detachSurfaces() = serviceWeakReference
