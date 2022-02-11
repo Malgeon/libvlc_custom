@@ -4,6 +4,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.IBinder
 import android.support.v4.media.session.MediaControllerCompat
@@ -16,10 +17,11 @@ import com.example.libvlc_custom.player.services.MediaPlayerServiceBinder
 
 abstract class MediaPlayerServiceFragment : Fragment() {
 
+    protected var isFullScreen = false
+
     protected var serviceBinder: MediaPlayerServiceBinder? = null
     private var mediaController: MediaControllerCompat? = null
     protected lateinit var mContext: Context
-
 
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceDisconnected(p0: ComponentName?) {
@@ -49,6 +51,7 @@ abstract class MediaPlayerServiceFragment : Fragment() {
             openFullscreen()
         }
     }
+
 
     protected abstract fun onServiceConnected()
     protected abstract fun openFullscreen()
