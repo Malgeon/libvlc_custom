@@ -9,7 +9,7 @@ object ResourceUtils {
     fun getDrawable(
         context: Context,
         id: Int
-    ): Drawable? {
+    ) : Drawable? {
         return ContextCompat.getDrawable(context, id)
     }
 }

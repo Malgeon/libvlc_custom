@@ -1,6 +1,7 @@
 package com.example.libvlc_custom.player.widget
 
 import android.content.Context
+import android.os.Handler
 import android.os.SystemClock
 import android.util.AttributeSet
 import android.util.Log
@@ -220,7 +221,7 @@ class PlayerControlOverlay @JvmOverloads constructor(
 
     private fun setRealTime(isRealTime: Boolean) {
         if (isRealTime xor this.isRealTime) {
-            if (isRealTime) {
+            if(isRealTime) {
                 seekBarPosition.visibility = GONE
                 textViewPosition.visibility = GONE
                 textViewDivide.visibility = GONE
@@ -256,7 +257,7 @@ class PlayerControlOverlay @JvmOverloads constructor(
     }
 
     fun setBuffering(isBuffering: Boolean) {
-        if (isBuffering) {
+        if(isBuffering) {
             progressBar.visibility = VISIBLE
         } else {
             progressBar.visibility = GONE
