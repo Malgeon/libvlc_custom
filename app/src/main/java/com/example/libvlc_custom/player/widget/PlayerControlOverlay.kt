@@ -6,7 +6,6 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
@@ -24,19 +23,20 @@ class PlayerControlOverlay @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
     defStyleRes: Int = 0
-) : FrameLayout(context, attrs, defStyleAttr), OnSeekBarChangeListener {
+) : ConstraintLayout(context, attrs, defStyleAttr), OnSeekBarChangeListener {
 
     private val root: View
     private var isTrackingTouch = false
     private var hasSelectedRenderer = false
     private var showSubtitleMenuItem = false
-    private var showSubtitle = ""
+    private var setSubtitle = ""
     private var isPlaying = false
     private var isRealTime = false
 
     private val toolbarHeader: Toolbar
     private val seekBarPosition: SeekBar
     private lateinit var callback: Callback
+    private val textViewTitle: AppCompatTextView
     private val textViewPosition: AppCompatTextView
     private val overlayContainer: ConstraintLayout
     private val textViewLength: AppCompatTextView
@@ -74,6 +74,7 @@ class PlayerControlOverlay @JvmOverloads constructor(
         imageRealtime = root.findViewById(R.id.imageview_realtime)
         textRealtime = root.findViewById(R.id.textview_realtime)
         progressBar = root.findViewById(R.id.loading)
+        textViewTitle = root.findViewById(R.id.toolbar_title)
 
         seekBarPosition.setOnSeekBarChangeListener(this)
         imageButtonPlayPause.setOnClickListener {
@@ -96,7 +97,7 @@ class PlayerControlOverlay @JvmOverloads constructor(
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        toolbarHeader.title = showSubtitle
+        textViewTitle.text = setSubtitle
     }
 
     private fun toggleOverlayVisibility() {
@@ -104,6 +105,14 @@ class PlayerControlOverlay @JvmOverloads constructor(
             maybeShowController(true)
         } else {
             hide()
+        }
+    }
+
+    fun toggleTitle(isFullscreen: Boolean) {
+        if(isFullscreen) {
+            textViewTitle.visibility = VISIBLE
+        } else {
+            textViewTitle.visibility = GONE
         }
     }
 
@@ -182,9 +191,9 @@ class PlayerControlOverlay @JvmOverloads constructor(
             R.styleable.PlayerControlComponent_showSubtitleMenuItem,
             true
         )
-        showSubtitle = styledAttributes.getString(
+        setSubtitle = styledAttributes.getString(
             R.styleable.PlayerControlComponent_showSubtitle
-        ) ?: "초기화"
+        ) ?: ""
         styledAttributes.recycle()
     }
 

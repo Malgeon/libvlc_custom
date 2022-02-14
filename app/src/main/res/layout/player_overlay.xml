@@ -4,6 +4,46 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/background_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imageview_realtime"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="20dp"
+            android:visibility="gone"
+            app:srcCompat="@drawable/ic_circle_red_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/textview_realtime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginStart="4dp"
+            android:textSize="12sp"
+            android:textColor="@color/player_toolbar_text_length"
+            android:text="실시간"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/imageview_realtime" />
+
+        <ProgressBar
+            android:id="@+id/loading"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/overlay_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -15,9 +55,25 @@
             android:layout_height="wrap_content"
             android:minHeight="?attr/actionBarSize"
             android:theme="@style/AppTheme.PlayerComponentToolbar"
-            tools:title="영상 제목"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+                <TextView
+                    android:id="@+id/toolbar_title"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:text="이것은 영상제목 영상제목 영상제목 영상 제목 영상제목 "
+                    android:singleLine="true"
+                    android:ellipsize="marquee"
+                    android:visibility="gone"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.appcompat.widget.Toolbar>
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/imagebutton_play_pause"
@@ -40,7 +96,6 @@
             android:minHeight="?attr/actionBarSize"
             android:theme="@style/AppTheme.PlayerComponentToolbar"
             app:layout_constraintBottom_toBottomOf="parent">
-
 
             <SeekBar
                 android:id="@+id/seekbar_position"
@@ -90,32 +145,6 @@
                 app:layout_constraintStart_toEndOf="@id/position_divide"
                 tools:ignore="RtlHardcoded" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/imageview_realtime"
-                android:layout_width="8dp"
-                android:layout_height="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginBottom="20dp"
-                android:visibility="gone"
-                app:srcCompat="@drawable/ic_circle_red_24"
-                app:layout_constraintBottom_toTopOf="@+id/seekbar_position"
-                app:layout_constraintStart_toEndOf="@id/textview_length"
-                tools:ignore="RtlHardcoded" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/textview_realtime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:layout_marginStart="4dp"
-                android:textSize="12sp"
-                android:textColor="@color/player_toolbar_text_length"
-                android:text="실시간"
-                android:visibility="gone"
-                app:layout_constraintBottom_toTopOf="@+id/seekbar_position"
-                app:layout_constraintStart_toEndOf="@id/imageview_realtime"
-                tools:ignore="RtlHardcoded" />
-
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/imagebutton_fullscreen"
                 android:layout_width="wrap_content"
@@ -130,15 +159,5 @@
                 tools:ignore="ContentDescription,MissingPrefix,VectorDrawableCompat" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <ProgressBar
-            android:id="@+id/loading"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </merge>
