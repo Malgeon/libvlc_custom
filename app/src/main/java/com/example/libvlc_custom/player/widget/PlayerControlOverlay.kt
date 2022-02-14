@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
@@ -23,7 +24,7 @@ class PlayerControlOverlay @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
     defStyleRes: Int = 0
-) : ConstraintLayout(context, attrs, defStyleAttr), OnSeekBarChangeListener {
+) : FrameLayout(context, attrs, defStyleAttr), OnSeekBarChangeListener {
 
     private val root: View
     private var isTrackingTouch = false
