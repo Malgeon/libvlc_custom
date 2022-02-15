@@ -40,13 +40,13 @@ import org.videolan.libvlc.interfaces.IVLCVout
 class Player1Fragment : MediaPlayerServiceFragment(), PlayerControlOverlay.Callback,
     MediaPlayer.Callback, IVLCVout.OnNewVideoLayoutListener {
 
-    private val rtspUrl = TempUrl
+    private val rtspUrl = TestUrl
 
     companion object {
         const val IsPlayingKey = "bundle.isplaying"
         const val LengthKey = "bundle.length"
         const val TimeKey = "bundle.time"
-        const val TempUrl = "rtsp://admin:aidkr1120!@125.136.90.37:558/0/2"
+        const val TempUrl = ""
         const val TestUrl = "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mp4"
         private const val UI_ANIMATION_DELAY = 300
     }
@@ -63,7 +63,6 @@ class Player1Fragment : MediaPlayerServiceFragment(), PlayerControlOverlay.Callb
     private var resumeTime: Long = 0
     private var statusBarHeight = 0
 
-    private val rootJob: AndroidJob = AndroidJob(lifecycle)
     private val handler = Handler()
     private val hideHandler = Handler()
 
@@ -124,6 +123,9 @@ class Player1Fragment : MediaPlayerServiceFragment(), PlayerControlOverlay.Callb
         super.onViewCreated(view, savedInstanceState)
         subscribeToViewComponents()
         configureSubtitleSurface()
+        binding.updateButton.setOnClickListener {
+            updateUrl()
+        }
         playerViewModel.isFullScreen.observe(viewLifecycleOwner) {
             activeFullscreen(it)
             binding.componentPlayerControl.setFullscreen(it)
@@ -339,6 +341,18 @@ class Player1Fragment : MediaPlayerServiceFragment(), PlayerControlOverlay.Callb
 
     override fun onPlayPauseButtonClicked() {
         serviceBinder?.togglePlayback()
+    }
+
+    private fun updateUrl() {
+        serviceBinder?.pause()
+
+        serviceBinder?.setMedia(
+            mContext, Uri.parse(TestUrl)
+        )
+
+        if (resumeIsPlaying) {
+            serviceBinder?.play()
+        }
     }
 
     override fun onFullScreenButtonClicked() {

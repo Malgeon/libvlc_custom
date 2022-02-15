@@ -68,6 +68,14 @@
             app:layout_constraintTop_toBottomOf="@+id/player_container"
             tools:text="연습장1" />
 
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/update_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="버튼"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/below_text1" />
+
         <TextView
             android:id="@+id/below_text2"
             android:layout_width="wrap_content"
