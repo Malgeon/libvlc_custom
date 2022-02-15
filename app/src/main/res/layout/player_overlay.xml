@@ -112,11 +112,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:layout_marginStart="8dp"
+                android:text="0:00"
                 android:textSize="12sp"
                 android:textColor="@color/player_toolbar_text_length"
                 app:layout_constraintBottom_toTopOf="@+id/seekbar_position"
                 app:layout_constraintStart_toStartOf="parent"
-                tools:text="0:00"
                 tools:ignore="RtlHardcoded" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -138,9 +138,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
+                android:text="0:00"
                 android:textSize="12sp"
                 android:textColor="@color/player_toolbar_text_length"
-                tools:text="0:00"
                 app:layout_constraintBottom_toTopOf="@+id/seekbar_position"
                 app:layout_constraintStart_toEndOf="@id/position_divide"
                 tools:ignore="RtlHardcoded" />
