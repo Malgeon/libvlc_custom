@@ -19,9 +19,11 @@ import androidx.media.session.MediaButtonReceiver
 import com.example.libvlc_custom.R
 import com.example.libvlc_custom.player.MediaPlayer
 import com.example.libvlc_custom.player.VlcMediaPlayer
+import com.example.libvlc_custom.player.VlcOptionsProvider
 import com.example.libvlc_custom.player.observables.RendererItemObservable
 import com.example.libvlc_custom.player.utils.*
 import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.qualifiers.ApplicationContext
 import org.videolan.libvlc.Dialog
 import org.videolan.libvlc.LibVLC
 import org.videolan.libvlc.RendererItem
@@ -34,12 +36,12 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MediaPlayerService : Service(), MediaPlayer.Callback, Dialog.Callbacks {
 
-    @Inject
-    @JvmField
-    var libVlc: LibVLC? = null
 
+    @ApplicationContext
     @Inject
-    @JvmField
+    lateinit var mContext: Context
+
+    var libVlc: LibVLC? = null
     var player: VlcMediaPlayer? = null
 
     var rendererItemObservable: RendererItemObservable? = null
@@ -85,6 +87,14 @@ class MediaPlayerService : Service(), MediaPlayer.Callback, Dialog.Callbacks {
     override fun onCreate() {
         super.onCreate()
 
+        libVlc = LibVLC(mContext, VlcOptionsProvider.Builder(mContext)
+            .setVerbose(true)
+            .withSubtitleEncoding("KOI8-R")
+            .build())
+
+        libVlc?.let {
+            player = VlcMediaPlayer(it)
+        }
 
         audioFocusChangeListener = WeakReference(createAudioFocusListener())
         audioManager = AudioUtils.getAudioManager(applicationContext)
@@ -112,6 +122,7 @@ class MediaPlayerService : Service(), MediaPlayer.Callback, Dialog.Callbacks {
     }
 
     override fun onDestroy() {
+        Log.e("MediaPlayerService", "destroy")
         stopForeground(true)
         Dialog.setCallbacks(libVlc, null)
         player?.release()
