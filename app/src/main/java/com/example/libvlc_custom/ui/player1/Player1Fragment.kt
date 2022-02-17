@@ -408,7 +408,10 @@ class Player1Fragment : MediaPlayerServiceFragment(), PlayerControlOverlay.Callb
     }
 
     override fun onPlayerEndReached() {
-        activity?.finish()
+        binding.componentPlayerControl.setReplay(true)
+        serviceBinder?.setMedia(
+            mContext, Uri.parse(TestUrl)
+        )
     }
 
     override fun onPlayerError() {

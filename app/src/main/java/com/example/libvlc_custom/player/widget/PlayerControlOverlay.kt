@@ -33,6 +33,7 @@ class PlayerControlOverlay @JvmOverloads constructor(
     private var setSubtitle = ""
     private var isPlaying = false
     private var isRealTime = false
+    private var isReplay = false
 
     private val toolbarHeader: Toolbar
     private val seekBarPosition: SeekBar
@@ -198,8 +199,12 @@ class PlayerControlOverlay @JvmOverloads constructor(
         styledAttributes.recycle()
     }
 
-    private fun getPlayPauseDrawableResourceId(isPlaying: Boolean): Int {
-        return if (isPlaying) R.drawable.ic_pause_white_36dp else R.drawable.ic_play_arrow_white_36dp
+    private fun getPlayPauseDrawableResourceId(isPlaying: Boolean, isReplay: Boolean): Int {
+        return if (isReplay) {
+            R.drawable.ic_replay_white
+        } else {
+            if (isPlaying) R.drawable.ic_pause_white_36dp else R.drawable.ic_play_arrow_white_36dp
+        }
     }
 
     fun configure(
@@ -208,13 +213,16 @@ class PlayerControlOverlay @JvmOverloads constructor(
         length: Long
     ) {
         this.isPlaying = isPlaying
+        if(isPlaying && isReplay) {
+            setReplay(false)
+        }
         maybeShowController(false)
         val lengthText: String = TimeUtils.getTimeString(length)
         val positionText: String = TimeUtils.getTimeString(time)
         val progress = (time.toFloat() / length * 100).toInt()
         ThreadUtils.onMain {
             imageButtonPlayPause.setImageResource(
-                getPlayPauseDrawableResourceId(isPlaying)
+                getPlayPauseDrawableResourceId(isPlaying, isReplay)
             )
             if (time <= 0 || length <= 0) {
                 setRealTime(true)
@@ -255,6 +263,10 @@ class PlayerControlOverlay @JvmOverloads constructor(
         imageButtonFullScreen.setImageResource(
             getFullscreenDrawableResourceId(isFullscreen)
         )
+    }
+
+    fun setReplay(isReplay: Boolean) {
+        this.isReplay = isReplay
     }
 
     private fun getFullscreenDrawableResourceId(isFullscreen: Boolean): Int {
