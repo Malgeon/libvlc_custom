@@ -142,6 +142,10 @@ class Player1Fragment : MediaPlayerServiceFragment(), PlayerControlOverlay.Callb
     }
 
     private val hideScreenRunnable = Runnable {
+        requireActivity().window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )
         binding.playerContainer.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE
                 // Set the content to appear under the system bars so that the
                 // content doesn't resize when the system bars hide and show.
@@ -175,6 +179,9 @@ class Player1Fragment : MediaPlayerServiceFragment(), PlayerControlOverlay.Callb
     }
 
     private fun showSystemUI() {
+        requireActivity().window.clearFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )
         binding.playerContainer.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
